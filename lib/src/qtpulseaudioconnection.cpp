@@ -80,7 +80,7 @@ bool QtPulseAudioConnection::connectToServer(const QString& server)
                                                       qApp->applicationName().toUtf8().data());
 
         pa_context_set_state_callback(d->pulseAudioData.context,
-                                      &QtPulseAudioConnectionPrivate::onContextNotify,
+                                      &QtPulseAudioConnectionPrivate::onContextStateChange,
                                       d);
 
         int ret = pa_context_connect(d->pulseAudioData.context,
