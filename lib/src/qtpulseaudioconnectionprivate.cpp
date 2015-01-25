@@ -50,11 +50,11 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onCardsInfoList(
     else
     {
         d->queriedFacilities |= QtPulseAudio::Card;
-        d->checkFacilitiesQueried();
+        d->checkInitialized();
     }
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextNotify(
+void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextStateChange(
         pa_context* context, void* userData)
 {
     Q_UNUSED(context);
@@ -77,10 +77,13 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextNotify(
 
         case PA_CONTEXT_READY:
         {
+            quint32 subscriptionMask = PA_SUBSCRIPTION_MASK_NULL;
+
             if (d->facilities.testFlag(QtPulseAudio::Card) ||
                     d->facilities.testFlag(QtPulseAudio::AllFacilities))
             {
                 d->wantFacilities |= QtPulseAudio::Card;
+                subscriptionMask |= PA_SUBSCRIPTION_MASK_CARD;
 
                 pa_operation_unref(
                     pa_context_get_card_info_list(
@@ -93,6 +96,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextNotify(
                     d->facilities.testFlag(QtPulseAudio::AllFacilities))
             {
                 d->wantFacilities |= QtPulseAudio::Sink;
+                subscriptionMask |= PA_SUBSCRIPTION_MASK_SINK;
 
                 pa_operation_unref(
                     pa_context_get_sink_info_list(
@@ -101,7 +105,17 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextNotify(
                         d));
             }
 
-            d->checkFacilitiesQueried();
+            pa_context_set_subscribe_callback(
+                d->pulseAudioData.context,
+                &QtPulseAudioConnectionPrivate::onContextSubscriptionEvent,
+                d);
+
+            pa_operation_unref(
+                pa_context_subscribe(
+                    d->pulseAudioData.context,
+                    static_cast< pa_subscription_mask_t >(subscriptionMask),
+                    &QtPulseAudioConnectionPrivate::onContextSubscription,
+                    d));
 
             break;
         }
@@ -115,6 +129,28 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextNotify(
             d->setState(QtPulseAudio::Unknown);
             break;
     }
+}
+
+void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscription(
+        pa_context *context, int success, void *userData)
+{
+    Q_UNUSED(context)
+    Q_UNUSED(success)
+    Q_UNUSED(userData)
+
+    qDebug() << "success: " << success;
+
+    QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    d->checkInitialized();
+}
+
+void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
+        pa_context *context, pa_subscription_event_type_t eventType, uint32_t idx, void *userData)
+{
+    Q_UNUSED(context);
+
+    qDebug() << "EventType: " << eventType << ", idx: " << idx;
 }
 
 void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
@@ -137,6 +173,6 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
     else
     {
         d->queriedFacilities |= QtPulseAudio::Sink;
-        d->checkFacilitiesQueried();
+        d->checkInitialized();
     }
 }

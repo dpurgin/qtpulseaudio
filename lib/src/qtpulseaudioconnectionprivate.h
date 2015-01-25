@@ -33,23 +33,35 @@ class QtPulseAudioConnection::QtPulseAudioConnectionPrivate
     friend class QtPulseAudioConnection;
 
 private:
-    static void onCardsInfoList(pa_context* context, const pa_card_info* cardInfo, int eol, void* userData);
-    static void onContextNotify(pa_context* context, void* userData);
-    static void onSinkInfoList(pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
+    static void onCardsInfoList(
+        pa_context* context, const pa_card_info* cardInfo, int eol, void* userData);
+
+    static void onContextStateChange(pa_context* context, void* userData);
+
+    static void onContextSubscription(pa_context* context, int success, void* userData);
+
+    static void onContextSubscriptionEvent(
+        pa_context* context, pa_subscription_event_type_t eventType, uint32_t idx, void* userData);
+
+    static void onSinkInfoList(
+        pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
 
 private:
     QtPulseAudioConnectionPrivate(QtPulseAudioConnection* q_ptr)
         : q(q_ptr),
           facilities(QtPulseAudio::AllFacilities),
+          wantFacilities(QtPulseAudio::NoFacilities),
+          queriedFacilities(QtPulseAudio::NoFacilities),
+          subscribed(false),
           state(QtPulseAudio::Unconnected)
     {
     }
 
     ~QtPulseAudioConnectionPrivate();
 
-    void checkFacilitiesQueried()
+    void checkInitialized()
     {
-        if (wantFacilities == queriedFacilities)
+        if (wantFacilities == queriedFacilities && subscribed)
             setState(QtPulseAudio::Connected);
     }
 
@@ -86,7 +98,7 @@ private:
 
     QtPulseAudio::Facilities wantFacilities;
     QtPulseAudio::Facilities queriedFacilities;
-
+    bool subscribed;
 
     QtPulseAudio::ConnectionState state;
     QString server;
