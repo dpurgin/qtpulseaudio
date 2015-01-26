@@ -25,15 +25,19 @@
 #include "qtpulseaudiosinkprivate.h"
 
 QtPulseAudioSink::QtPulseAudioSink(QtPulseAudioSinkPrivate* const dptr)
-    : QtPulseAudioFacility(),
-      d(dptr)
+    : QtPulseAudioFacility(dptr)
 {
     qDebug() << "Discovered sink:" << index() << name();
 }
 
 QtPulseAudioSink::~QtPulseAudioSink()
 {
-    delete d;
+}
+
+void QtPulseAudioSink::update()
+{
+//    pa_operation_unref(
+//        pa_context_get_sink_info_by_index(d->pulseAudioData, d->index, ))
 }
 
 //#include <QDebug>
@@ -105,11 +109,15 @@ QtPulseAudioSink::~QtPulseAudioSink()
 
 quint32 QtPulseAudioSink::index() const
 {
+    const Q_D(QtPulseAudioSink);
+
     return d->index;
 }
 
 QString QtPulseAudioSink::name() const
 {
+    const Q_D(QtPulseAudioSink);
+
     return d->name;
 }
 

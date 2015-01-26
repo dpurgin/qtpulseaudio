@@ -36,14 +36,17 @@
 
 
 QtPulseAudioCard::QtPulseAudioCard(QtPulseAudioCardPrivate* const dptr)
-    : QtPulseAudioFacility(),
-      d(dptr)
+    : QtPulseAudioFacility(dptr)
 {
+    Q_D(QtPulseAudioCard);
+
     qDebug() << "Discovered card:" << d->index << d->name;
 }
 
 QtPulseAudioCard::~QtPulseAudioCard()
 {
+    Q_D(QtPulseAudioCard);
+
     qDebug() << "Destroying card:" << d->index << d->name;
 
     delete d;
@@ -94,11 +97,15 @@ QtPulseAudioCard::~QtPulseAudioCard()
 
 quint32 QtPulseAudioCard::index() const
 {
+    const Q_D(QtPulseAudioCard);
+
     return d->index;
 }
 
 QString QtPulseAudioCard::name() const
 {
+    const Q_D(QtPulseAudioCard);
+
     return d->name;
 }
 
@@ -106,6 +113,10 @@ QString QtPulseAudioCard::name() const
 //{
 //    return d->ownerModule;
 //}
+
+void QtPulseAudioCard::update()
+{
+}
 
 //void PulseAudioCard::update(const pa_card_info* paCardInfo)
 //{

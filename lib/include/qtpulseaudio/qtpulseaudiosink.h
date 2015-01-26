@@ -35,6 +35,7 @@ class QtPulseAudioSink : public QtPulseAudioFacility
     friend class QtPulseAudioFacilityFactory;
 
 public:
+    void update();
 
 //    PulseAudioSinkPort* activePort() const;
 //    void setActivePort(const QString& port);
@@ -54,7 +55,7 @@ private:
     virtual ~QtPulseAudioSink();
 
 private:
-    QtPulseAudioSinkPrivate* const d;
+    Q_DECLARE_PRIVATE(QtPulseAudioSink)
 };
 
 #endif // QTPULSEAUDIOSINK_H
