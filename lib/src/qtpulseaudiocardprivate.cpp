@@ -18,7 +18,8 @@
 
 #include "qtpulseaudiocardprivate.h"
 
-QtPulseAudioCardPrivate::QtPulseAudioCardPrivate(const pa_card_info* cardInfo)
+QtPulseAudioCardPrivate::QtPulseAudioCardPrivate(pa_context* context, const pa_card_info* cardInfo)
+    : QtPulseAudioFacilityPrivate(context)
 {
     index = cardInfo->index;
     name = QString::fromUtf8(cardInfo->name);

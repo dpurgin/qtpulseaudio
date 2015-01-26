@@ -23,7 +23,9 @@
 
 #include <pulse/introspect.h>
 
-class QtPulseAudioCardPrivate
+#include "qtpulseaudiofacilityprivate.h"
+
+class QtPulseAudioCardPrivate : protected QtPulseAudioFacilityPrivate
 {
     Q_DISABLE_COPY(QtPulseAudioCardPrivate)
 
@@ -31,7 +33,7 @@ class QtPulseAudioCardPrivate
     friend class QtPulseAudioFacilityFactory;
 
 private:
-    explicit QtPulseAudioCardPrivate(const pa_card_info* cardInfo);
+    explicit QtPulseAudioCardPrivate(pa_context* context, const pa_card_info* cardInfo);
     ~QtPulseAudioCardPrivate();
 
 private:
