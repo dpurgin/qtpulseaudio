@@ -25,13 +25,15 @@
 
 #include <pulse/introspect.h>
 
-class QtPulseAudioSinkPrivate
+#include "qtpulseaudiofacilityprivate.h"
+
+class QtPulseAudioSinkPrivate : protected QtPulseAudioFacilityPrivate
 {
     friend class QtPulseAudioFacilityFactory;
     friend class QtPulseAudioSink;
 
 private:
-    QtPulseAudioSinkPrivate(const pa_sink_info* sinkInfo);
+    QtPulseAudioSinkPrivate(pa_context* context, const pa_sink_info* sinkInfo);
     ~QtPulseAudioSinkPrivate();
 
 private:
