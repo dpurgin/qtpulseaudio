@@ -41,7 +41,10 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onCardsInfoList(
     if (!eol)
     {
         QtPulseAudioCard* card = dynamic_cast< QtPulseAudioCard* >(
-                    QtPulseAudioFacilityFactory::create(QtPulseAudio::Card, cardInfo));
+            QtPulseAudioFacilityFactory::create(
+                QtPulseAudio::Card,
+                d->pulseAudioData.context,
+                cardInfo));
 
         d->cards.insert(card);
         d->cardsByIndex.insert(card->index(), card);
@@ -146,11 +149,22 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
 }
 
 void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
-        pa_context *context, pa_subscription_event_type_t eventType, uint32_t idx, void *userData)
+        pa_context *context, pa_subscription_event_type_t eventData, uint32_t idx, void *userData)
 {
     Q_UNUSED(context);
 
-    qDebug() << "EventType: " << eventType << ", idx: " << idx;
+    QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(d);
+
+    int facility = eventData & PA_SUBSCRIPTION_EVENT_FACILITY_MASK;
+    int event = eventData & PA_SUBSCRIPTION_EVENT_TYPE_MASK;
+
+    if (facility == PA_SUBSCRIPTION_EVENT_SINK && d->facilities.testFlag(QtPulseAudio::Sink))
+    {
+        if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
+            d->sinksByIndex[idx]->update();
+    }
+
+    qDebug() << "EventType: " << event << ", idx: " << idx;
 }
 
 void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
@@ -164,7 +178,10 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
     if (!eol)
     {
         QtPulseAudioSink* sink = dynamic_cast< QtPulseAudioSink* >(
-                    QtPulseAudioFacilityFactory::create(QtPulseAudio::Sink, sinkInfo));
+            QtPulseAudioFacilityFactory::create(
+                QtPulseAudio::Sink,
+                d->pulseAudioData.context,
+                sinkInfo));
 
         d->sinks.insert(sink);
         d->sinksByIndex.insert(sink->index(), sink);

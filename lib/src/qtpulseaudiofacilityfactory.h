@@ -30,7 +30,10 @@
 class QtPulseAudioFacilityFactory
 {
 public:
-    static QtPulseAudioFacility* create(QtPulseAudio::Facility facility, const void* pulseAudioData)
+    static QtPulseAudioFacility* create(
+            QtPulseAudio::Facility facility,
+            pa_context* pulseAudioContext,
+            const void* pulseAudioData)
     {
         QtPulseAudioFacility* result = NULL;
 
@@ -38,12 +41,14 @@ public:
         {
             result = new QtPulseAudioSink(
                         new QtPulseAudioSinkPrivate(
+                            pulseAudioContext,
                             reinterpret_cast< const pa_sink_info* >(pulseAudioData)));
         }
         else if (facility == QtPulseAudio::Card)
         {
             result = new QtPulseAudioCard(
                         new QtPulseAudioCardPrivate(
+                            pulseAudioContext,
                             reinterpret_cast< const pa_card_info* >(pulseAudioData)));
         }
 
