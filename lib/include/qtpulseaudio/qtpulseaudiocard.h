@@ -33,6 +33,8 @@ class QtPulseAudioCard : public QtPulseAudioFacility
     friend class QtPulseAudioFacilityFactory;
 
 public:
+    void update();
+
 //    PulseAudioCardProfile* activeProfile() const;
 //    void setActiveProfile(const QString& activeProfile);
 
@@ -57,7 +59,7 @@ private:
     virtual ~QtPulseAudioCard();
 
 private:
-    QtPulseAudioCardPrivate* const d;
+    Q_DECLARE_PRIVATE(QtPulseAudioCard)
 };
 
 #endif // QTPULSEAUDIOCARD_H
