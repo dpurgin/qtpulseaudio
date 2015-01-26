@@ -21,12 +21,14 @@
 
 #include <QObject>
 
+class QtPulseAudioFacilityPrivate;
+
 class QtPulseAudioFacility : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit QtPulseAudioFacility();
+    explicit QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const d);
     virtual ~QtPulseAudioFacility();
 
     virtual void update() = 0;
@@ -35,8 +37,8 @@ signals:
 
 public slots:
 
-private:
-
+protected:
+    QtPulseAudioFacilityPrivate* const d_ptr;
 };
 
 #endif // QTPULSEAUDIOFACILITY_H

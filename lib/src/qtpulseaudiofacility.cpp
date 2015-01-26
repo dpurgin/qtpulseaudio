@@ -18,14 +18,16 @@
 
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
-#include <QDebug>
+#include "qtpulseaudiofacilityprivate.h"
 
-QtPulseAudioFacility::QtPulseAudioFacility()
-    : QObject(NULL)
+QtPulseAudioFacility::QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const d)
+    : QObject(NULL),
+      d_ptr(d)
 {
 }
 
 QtPulseAudioFacility::~QtPulseAudioFacility()
 {
+    delete d_ptr;
 }
 
