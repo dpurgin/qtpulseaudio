@@ -20,40 +20,33 @@
 #define QTPULSEAUDIOFACILITYFACTORY_H
 
 #include <qtpulseaudio/qtpulseaudio.h>
-#include <qtpulseaudio/qtpulseaudiocard.h>
 #include <qtpulseaudio/qtpulseaudiofacility.h>
-#include <qtpulseaudio/qtpulseaudiosink.h>
 
-#include "qtpulseaudiocardprivate.h"
-#include "qtpulseaudiosinkprivate.h"
+#include "qtpulseaudiodata.h"
 
 class QtPulseAudioFacilityFactory
 {
 public:
-    static QtPulseAudioFacility* create(
-            QtPulseAudio::Facility facility,
-            pa_context* pulseAudioContext,
-            const void* pulseAudioData)
+    typedef QtPulseAudioFacility* (*FactoryMethod)(QtPulseAudioData data);
+
+    static QtPulseAudioFacility* create(QtPulseAudio::Facility facility, QtPulseAudioData data)
     {
         QtPulseAudioFacility* result = NULL;
+        FactoryMethod method = mFactoryMethods.value(facility, NULL);
 
-        if (facility == QtPulseAudio::Sink)
-        {
-            result = new QtPulseAudioSink(
-                        new QtPulseAudioSinkPrivate(
-                            pulseAudioContext,
-                            reinterpret_cast< const pa_sink_info* >(pulseAudioData)));
-        }
-        else if (facility == QtPulseAudio::Card)
-        {
-            result = new QtPulseAudioCard(
-                        new QtPulseAudioCardPrivate(
-                            pulseAudioContext,
-                            reinterpret_cast< const pa_card_info* >(pulseAudioData)));
-        }
+        if (method)
+            result = (*method)(data);
 
         return result;
     }
+
+    static void registerType(QtPulseAudio::Facility facility, FactoryMethod method)
+    {
+        mFactoryMethods.insert(facility, method);
+    }
+
+private:
+    static QMap< QtPulseAudio::Facility, FactoryMethod > mFactoryMethods;
 };
 
 #endif // QTPULSEAUDIOFACILITYFACTORY_H
