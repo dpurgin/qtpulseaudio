@@ -28,31 +28,27 @@
 class QtPulseAudioData
 {
 public:
-    explicit QtPulseAudioData():
-        context(NULL),
-        mainLoopApi(NULL),
-        mainLoop(NULL)
+    explicit QtPulseAudioData(pa_context* _context, const void* _data):
+        context(_context),
+        data(_data)
     {
     }
 
     explicit QtPulseAudioData(const QtPulseAudioData& other)
         : context(NULL),
-          mainLoopApi(NULL),
-          mainLoop(NULL)
+          data(NULL)
     {
         assign(other);
     }
 
     pa_context* context;
-    pa_mainloop_api* mainLoopApi;
-    pa_threaded_mainloop* mainLoop;
+    const void* data;
 
 private:
     void assign(const QtPulseAudioData& other)
     {
         context = other.context;
-        mainLoopApi = other.mainLoopApi;
-        mainLoop = other.mainLoop;
+        data = other.data;
     }
 };
 
