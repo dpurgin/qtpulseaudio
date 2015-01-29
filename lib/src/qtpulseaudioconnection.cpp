@@ -43,19 +43,19 @@ QtPulseAudioConnection::QtPulseAudioConnection(QtPulseAudio::Facilities faciliti
 {
     d->facilities = facilities;
 
-    d->pulseAudioData.mainLoop = pa_threaded_mainloop_new();
-    d->pulseAudioData.mainLoopApi = pa_threaded_mainloop_get_api(d->pulseAudioData.mainLoop);
+    d->mainLoop = pa_threaded_mainloop_new();
+    d->mainLoopApi = pa_threaded_mainloop_get_api(d->mainLoop);
 
-    pa_threaded_mainloop_start(d->pulseAudioData.mainLoop);
+    pa_threaded_mainloop_start(d->mainLoop);
 }
 
 QtPulseAudioConnection::~QtPulseAudioConnection()
 {
-    if (d->pulseAudioData.mainLoop)
+    if (d->mainLoop)
     {
         //TODO: check cleanup code for PulseAudio
-        pa_threaded_mainloop_stop(d->pulseAudioData.mainLoop);
-        pa_threaded_mainloop_free(d->pulseAudioData.mainLoop);
+        pa_threaded_mainloop_stop(d->mainLoop);
+        pa_threaded_mainloop_free(d->mainLoop);
     }
 }
 
@@ -76,14 +76,13 @@ bool QtPulseAudioConnection::connectToServer(const QString& server)
     if (state() == QtPulseAudio::Unconnected ||
             state() == QtPulseAudio::Failed)
     {
-        d->pulseAudioData.context = pa_context_new(d->pulseAudioData.mainLoopApi,
-                                                      qApp->applicationName().toUtf8().data());
+        d->context = pa_context_new(d->mainLoopApi, qApp->applicationName().toUtf8().data());
 
-        pa_context_set_state_callback(d->pulseAudioData.context,
+        pa_context_set_state_callback(d->context,
                                       &QtPulseAudioConnectionPrivate::onContextStateChange,
                                       d);
 
-        int ret = pa_context_connect(d->pulseAudioData.context,
+        int ret = pa_context_connect(d->context,
                                      server.isEmpty()? NULL: server.toUtf8().data(),
                                      PA_CONTEXT_NOFLAGS,
                                      NULL);

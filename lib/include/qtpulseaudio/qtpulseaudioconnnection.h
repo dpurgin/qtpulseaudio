@@ -34,7 +34,7 @@ class QTPULSEAUDIO_DECL QtPulseAudioConnection : public QObject
     Q_DISABLE_COPY(QtPulseAudioConnection)
 
 public:
-    QtPulseAudioConnection(QtPulseAudio::Facilities facilities, QObject* parent = Q_NULLPTR);
+    QtPulseAudioConnection(QtPulseAudio::Facilities facilities, QObject* parent = NULL);
     virtual ~QtPulseAudioConnection();
 
     QtPulseAudioStream* createStream(QtPulseAudio::StreamType streamType,

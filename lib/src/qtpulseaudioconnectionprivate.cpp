@@ -43,8 +43,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onCardsInfoList(
         QtPulseAudioCard* card = dynamic_cast< QtPulseAudioCard* >(
             QtPulseAudioFacilityFactory::create(
                 QtPulseAudio::Card,
-                d->pulseAudioData.context,
-                cardInfo));
+                QtPulseAudioData(d->context, cardInfo)));
 
         d->cards.insert(card);
         d->cardsByIndex.insert(card->index(), card);
@@ -90,7 +89,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextStateChange
 
                 pa_operation_unref(
                     pa_context_get_card_info_list(
-                        d->pulseAudioData.context,
+                        d->context,
                         &QtPulseAudioConnectionPrivate::onCardsInfoList,
                         d));
             }
@@ -103,19 +102,19 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextStateChange
 
                 pa_operation_unref(
                     pa_context_get_sink_info_list(
-                        d->pulseAudioData.context,
+                        d->context,
                         &QtPulseAudioConnectionPrivate::onSinkInfoList,
                         d));
             }
 
             pa_context_set_subscribe_callback(
-                d->pulseAudioData.context,
+                d->context,
                 &QtPulseAudioConnectionPrivate::onContextSubscriptionEvent,
                 d);
 
             pa_operation_unref(
                 pa_context_subscribe(
-                    d->pulseAudioData.context,
+                    d->context,
                     static_cast< pa_subscription_mask_t >(subscriptionMask),
                     &QtPulseAudioConnectionPrivate::onContextSubscription,
                     d));
@@ -178,10 +177,8 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
     if (!eol)
     {
         QtPulseAudioSink* sink = dynamic_cast< QtPulseAudioSink* >(
-            QtPulseAudioFacilityFactory::create(
-                QtPulseAudio::Sink,
-                d->pulseAudioData.context,
-                sinkInfo));
+            QtPulseAudioFacilityFactory::create(QtPulseAudio::Sink,
+                                                QtPulseAudioData(d->context, sinkInfo)));
 
         d->sinks.insert(sink);
         d->sinksByIndex.insert(sink->index(), sink);

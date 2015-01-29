@@ -22,8 +22,7 @@
 #include <qtpulseaudio/qtpulseaudioconnnection.h>
 
 #include <pulse/introspect.h>
-
-#include "qtpulseaudiodata.h"
+#include <pulse/thread-mainloop.h>
 
 class QtPulseAudioCard;
 class QtPulseAudioSink;
@@ -48,7 +47,10 @@ private:
 
 private:
     QtPulseAudioConnectionPrivate(QtPulseAudioConnection* q_ptr)
-        : q(q_ptr),
+        : context(NULL),
+          mainLoop(NULL),
+          mainLoopApi(NULL),
+          q(q_ptr),
           facilities(QtPulseAudio::AllFacilities),
           wantFacilities(QtPulseAudio::NoFacilities),
           queriedFacilities(QtPulseAudio::NoFacilities),
@@ -91,7 +93,10 @@ private:
     }
 
 private:
-    QtPulseAudioData pulseAudioData;
+    pa_context* context;
+    pa_threaded_mainloop* mainLoop;
+    pa_mainloop_api* mainLoopApi;
+
     QtPulseAudioConnection* q;
 
     QtPulseAudio::Facilities facilities;
