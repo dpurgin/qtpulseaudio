@@ -24,6 +24,7 @@
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
 class QtPulseAudioCardPrivate;
+class QtPulseAudioData;
 
 class QtPulseAudioCard : public QtPulseAudioFacility
 {
@@ -31,6 +32,8 @@ class QtPulseAudioCard : public QtPulseAudioFacility
     Q_DISABLE_COPY(QtPulseAudioCard)
 
     friend class QtPulseAudioFacilityFactory;
+
+    static QtPulseAudioFacility* create(const QtPulseAudioData& pulseAudioData);
 
 public:
     void update();
@@ -55,7 +58,7 @@ signals:
 public slots:
 
 private:
-    explicit QtPulseAudioCard(QtPulseAudioCardPrivate* const dptr);
+    explicit QtPulseAudioCard(const QtPulseAudioData& pulseAudioData);
     virtual ~QtPulseAudioCard();
 
 private:

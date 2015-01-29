@@ -35,8 +35,8 @@
 #include "qtpulseaudiocardprivate.h"
 
 
-QtPulseAudioCard::QtPulseAudioCard(QtPulseAudioCardPrivate* const dptr)
-    : QtPulseAudioFacility(dptr)
+QtPulseAudioCard::QtPulseAudioCard(const QtPulseAudioData& pulseAudioData)
+    : QtPulseAudioFacility(new QtPulseAudioCardPrivate(pulseAudioData))
 {
     Q_D(QtPulseAudioCard);
 
@@ -50,6 +50,11 @@ QtPulseAudioCard::~QtPulseAudioCard()
     qDebug() << "Destroying card:" << d->index << d->name;
 
     delete d;
+}
+
+QtPulseAudioFacility* QtPulseAudioCard::create(const QtPulseAudioData& pulseAudioData)
+{
+    return new QtPulseAudioCard(pulseAudioData);
 }
 
 //PulseAudioCard::PulseAudioCard(pa_context* context, const pa_card_info* paCardInfo, QObject *parent)

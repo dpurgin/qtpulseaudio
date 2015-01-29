@@ -30,10 +30,9 @@ class QtPulseAudioCardPrivate : protected QtPulseAudioFacilityPrivate
     Q_DISABLE_COPY(QtPulseAudioCardPrivate)
 
     friend class QtPulseAudioCard;
-    friend class QtPulseAudioFacilityFactory;
 
 private:
-    explicit QtPulseAudioCardPrivate(pa_context* context, const pa_card_info* cardInfo);
+    explicit QtPulseAudioCardPrivate(const QtPulseAudioData& pulseAudioData);
     ~QtPulseAudioCardPrivate();
 
 private:
