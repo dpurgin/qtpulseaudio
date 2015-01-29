@@ -29,11 +29,10 @@
 
 class QtPulseAudioSinkPrivate : protected QtPulseAudioFacilityPrivate
 {
-    friend class QtPulseAudioFacilityFactory;
     friend class QtPulseAudioSink;
 
 private:
-    QtPulseAudioSinkPrivate(pa_context* context, const pa_sink_info* sinkInfo);
+    QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData);
     ~QtPulseAudioSinkPrivate();
 
 private:

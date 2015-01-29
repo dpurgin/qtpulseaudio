@@ -18,9 +18,11 @@
 
 #include "qtpulseaudiosinkprivate.h"
 
-QtPulseAudioSinkPrivate::QtPulseAudioSinkPrivate(pa_context* context, const pa_sink_info* sinkInfo)
-    : QtPulseAudioFacilityPrivate(context)
+QtPulseAudioSinkPrivate::QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData)
+    : QtPulseAudioFacilityPrivate(pulseAudioData)
 {
+    const pa_sink_info* sinkInfo = reinterpret_cast< const pa_sink_info* >(pulseAudioData.data);
+
     index = sinkInfo->index;
     name = QString::fromUtf8(sinkInfo->name);
 }
