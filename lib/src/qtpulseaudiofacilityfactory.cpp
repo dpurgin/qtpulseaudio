@@ -18,3 +18,5 @@
 
 #include "qtpulseaudiofacilityfactory.h"
 
+QMap< QtPulseAudio::Facility, QtPulseAudioFacilityFactory::FactoryMethod >
+    QtPulseAudioFacilityFactory::mFactoryMethods;

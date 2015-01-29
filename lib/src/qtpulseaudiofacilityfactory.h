@@ -27,9 +27,10 @@
 class QtPulseAudioFacilityFactory
 {
 public:
-    typedef QtPulseAudioFacility* (*FactoryMethod)(QtPulseAudioData data);
+    typedef QtPulseAudioFacility* (*FactoryMethod)(const QtPulseAudioData& data);
 
-    static QtPulseAudioFacility* create(QtPulseAudio::Facility facility, QtPulseAudioData data)
+    static QtPulseAudioFacility* create(
+            QtPulseAudio::Facility facility, const QtPulseAudioData& data)
     {
         QtPulseAudioFacility* result = NULL;
         FactoryMethod method = mFactoryMethods.value(facility, NULL);
