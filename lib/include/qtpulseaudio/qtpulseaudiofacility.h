@@ -21,6 +21,7 @@
 
 #include <QObject>
 
+class QtPulseAudioData;
 class QtPulseAudioFacilityPrivate;
 
 class QtPulseAudioFacility : public QObject
@@ -28,7 +29,7 @@ class QtPulseAudioFacility : public QObject
     Q_OBJECT
 
 public:
-    explicit QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const d);
+    explicit QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const dptr);
     virtual ~QtPulseAudioFacility();
 
     virtual void update() = 0;
