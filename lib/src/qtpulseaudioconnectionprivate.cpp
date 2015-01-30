@@ -41,9 +41,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onCardsInfoList(
     if (!eol)
     {
         QtPulseAudioCard* card = dynamic_cast< QtPulseAudioCard* >(
-            QtPulseAudioFacilityFactory::create(
-                QtPulseAudio::Card,
-                QtPulseAudioData(d->context, cardInfo)));
+            qtpaFacilityFactory->create(QtPulseAudio::Card, QtPulseAudioData(d->context, cardInfo)));
 
         d->cards.insert(card);
         d->cardsByIndex.insert(card->index(), card);
@@ -177,8 +175,8 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
     if (!eol)
     {
         QtPulseAudioSink* sink = dynamic_cast< QtPulseAudioSink* >(
-            QtPulseAudioFacilityFactory::create(QtPulseAudio::Sink,
-                                                QtPulseAudioData(d->context, sinkInfo)));
+            qtpaFacilityFactory->create(QtPulseAudio::Sink,
+                                        QtPulseAudioData(d->context, sinkInfo)));
 
         d->sinks.insert(sink);
         d->sinksByIndex.insert(sink->index(), sink);
