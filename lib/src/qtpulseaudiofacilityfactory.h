@@ -22,32 +22,33 @@
 #include <qtpulseaudio/qtpulseaudio.h>
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
+#include <QMap>
+#include <QMutex>
+#include <QMutexLocker>
+
 #include "qtpulseaudiodata.h"
+
+#define qtpaFacilityFactory (QtPulseAudioFacilityFactory::instance())
 
 class QtPulseAudioFacilityFactory
 {
-public:
     typedef QtPulseAudioFacility* (*FactoryMethod)(const QtPulseAudioData& data);
+    typedef QMap< QtPulseAudio::Facility, FactoryMethod > FactoryMethods;
 
-    static QtPulseAudioFacility* create(
-            QtPulseAudio::Facility facility, const QtPulseAudioData& data)
-    {
-        QtPulseAudioFacility* result = NULL;
-        FactoryMethod method = mFactoryMethods.value(facility, NULL);
+public:
+    static QtPulseAudioFacilityFactory* instance();
 
-        if (method)
-            result = (*method)(data);
+    QtPulseAudioFacility* create(QtPulseAudio::Facility facility, const QtPulseAudioData& data);
 
-        return result;
-    }
-
-    static void registerType(QtPulseAudio::Facility facility, FactoryMethod method)
-    {
-        mFactoryMethods.insert(facility, method);
-    }
+    void registerFacility(QtPulseAudio::Facility facility, FactoryMethod method);
 
 private:
-    static QMap< QtPulseAudio::Facility, FactoryMethod > mFactoryMethods;
+    explicit QtPulseAudioFacilityFactory();
+    ~QtPulseAudioFacilityFactory();
+
+    static QtPulseAudioFacilityFactory* mInstance;
+
+    FactoryMethods mFactoryMethods;
 };
 
 #endif // QTPULSEAUDIOFACILITYFACTORY_H

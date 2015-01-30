@@ -18,5 +18,45 @@
 
 #include "qtpulseaudiofacilityfactory.h"
 
-QMap< QtPulseAudio::Facility, QtPulseAudioFacilityFactory::FactoryMethod >
-    QtPulseAudioFacilityFactory::mFactoryMethods;
+QtPulseAudioFacilityFactory* QtPulseAudioFacilityFactory::mInstance = NULL;
+
+QtPulseAudioFacilityFactory::QtPulseAudioFacilityFactory()
+{
+}
+
+QtPulseAudioFacilityFactory::~QtPulseAudioFacilityFactory()
+{
+}
+
+QtPulseAudioFacilityFactory* QtPulseAudioFacilityFactory::instance()
+{
+    if (mInstance == NULL)
+    {
+        QMutex mutex;
+
+        QMutexLocker locker(&mutex);
+
+        if (mInstance == NULL)
+            mInstance = new QtPulseAudioFacilityFactory();
+    }
+
+    return mInstance;
+}
+
+QtPulseAudioFacility* QtPulseAudioFacilityFactory::create(
+        QtPulseAudio::Facility facility, const QtPulseAudioData& data)
+{
+    QtPulseAudioFacility* result = NULL;
+    FactoryMethod method = mFactoryMethods.value(facility, NULL);
+
+    if (method)
+        result = (*method)(data);
+
+    return result;
+}
+
+void QtPulseAudioFacilityFactory::registerFacility(
+        QtPulseAudio::Facility facility, FactoryMethod method)
+{
+    mFactoryMethods.insert(facility, method);
+}
