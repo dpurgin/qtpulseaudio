@@ -32,7 +32,9 @@ class QtPulseAudioSink : public QtPulseAudioFacility
     Q_OBJECT
     Q_DISABLE_COPY(QtPulseAudioSink)
 
-    friend class QtPulseAudioFacilityFactory;
+    friend void registerSinkFacility();
+
+    static QtPulseAudioFacility* create(const QtPulseAudioData& data);
 
 public:
     void update();
@@ -51,7 +53,7 @@ public:
 //public slots:
 
 private:
-    explicit QtPulseAudioSink(QtPulseAudioSinkPrivate* const dptr);
+    explicit QtPulseAudioSink(const QtPulseAudioData& data);
     virtual ~QtPulseAudioSink();
 
 private:

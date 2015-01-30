@@ -22,16 +22,30 @@
 
 #include <QDebug>
 
+#include "qtpulseaudiofacilityfactory.h"
+
 #include "qtpulseaudiosinkprivate.h"
 
-QtPulseAudioSink::QtPulseAudioSink(QtPulseAudioSinkPrivate* const dptr)
-    : QtPulseAudioFacility(dptr)
+void registerSinkFacility()
+{
+    qtpaFacilityFactory->registerFacility(QtPulseAudio::Sink, &QtPulseAudioSink::create);
+}
+
+Q_CONSTRUCTOR_FUNCTION(registerSinkFacility)
+
+QtPulseAudioSink::QtPulseAudioSink(const QtPulseAudioData& data)
+    : QtPulseAudioFacility(new QtPulseAudioSinkPrivate(data))
 {
     qDebug() << "Discovered sink:" << index() << name();
 }
 
 QtPulseAudioSink::~QtPulseAudioSink()
 {
+}
+
+QtPulseAudioFacility* QtPulseAudioSink::create(const QtPulseAudioData &data)
+{
+    return new QtPulseAudioSink(data);
 }
 
 void QtPulseAudioSink::update()
