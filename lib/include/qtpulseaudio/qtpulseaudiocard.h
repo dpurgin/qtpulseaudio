@@ -31,7 +31,7 @@ class QtPulseAudioCard : public QtPulseAudioFacility
     Q_OBJECT
     Q_DISABLE_COPY(QtPulseAudioCard)
 
-    friend class QtPulseAudioFacilityFactory;
+    friend void registerCardFacility();
 
     static QtPulseAudioFacility* create(const QtPulseAudioData& pulseAudioData);
 

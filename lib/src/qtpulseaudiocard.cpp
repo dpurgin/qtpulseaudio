@@ -32,8 +32,16 @@
 #include <pulse/introspect.h>
 //#include <pulse/version.h>
 
+#include "qtpulseaudiofacilityfactory.h"
+
 #include "qtpulseaudiocardprivate.h"
 
+void registerCardFacility()
+{
+    qtpaFacilityFactory->registerFacility(QtPulseAudio::Card, &QtPulseAudioCard::create);
+}
+
+Q_CONSTRUCTOR_FUNCTION(registerCardFacility)
 
 QtPulseAudioCard::QtPulseAudioCard(const QtPulseAudioData& pulseAudioData)
     : QtPulseAudioFacility(new QtPulseAudioCardPrivate(pulseAudioData))
