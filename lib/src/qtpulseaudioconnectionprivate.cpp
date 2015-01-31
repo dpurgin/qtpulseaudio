@@ -142,6 +142,11 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
 
     QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
 
+    if (success)
+        d->subscribed = true;
+    else
+        emit d->q->error("Unable to subscribe to events");
+
     d->checkInitialized();
 }
 
