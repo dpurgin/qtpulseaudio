@@ -44,7 +44,7 @@ void registerCardFacility()
 Q_CONSTRUCTOR_FUNCTION(registerCardFacility)
 
 QtPulseAudioCard::QtPulseAudioCard(const QtPulseAudioData& pulseAudioData)
-    : QtPulseAudioFacility(new QtPulseAudioCardPrivate(pulseAudioData))
+    : QtPulseAudioFacility(new QtPulseAudioCardPrivate(pulseAudioData), this)
 {
     Q_D(QtPulseAudioCard);
 
