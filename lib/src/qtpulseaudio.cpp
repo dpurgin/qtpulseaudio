@@ -28,6 +28,8 @@
 
 void qtpaMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
+    Q_UNUSED(type)
+
 #ifdef __x86_64__
     #define ADDRESS quint64
     const int WIDTH = 16;
@@ -55,15 +57,18 @@ void qtpaMessageHandler(QtMsgType type, const QMessageLogContext& context, const
               << "\n";
 }
 
-static void initialize()
-{
-    qRegisterMetaType< QtPulseAudio::ConnectionState >();
-    qRegisterMetaType< QtPulseAudio::StreamType >();
+namespace {
+    static void initialize()
+    {
+        qRegisterMetaType< QtPulseAudio::ConnectionState >();
+        qRegisterMetaType< QtPulseAudio::PortAvailability >();
+        qRegisterMetaType< QtPulseAudio::StreamType >();
 
-    qInstallMessageHandler(qtpaMessageHandler);
+        qInstallMessageHandler(qtpaMessageHandler);
+    }
+
+    Q_CONSTRUCTOR_FUNCTION(initialize)
 }
-
-Q_CONSTRUCTOR_FUNCTION(initialize)
 
 QDebug operator<<(QDebug dbg, QtPulseAudio::ConnectionState state)
 {
@@ -93,6 +98,30 @@ QDebug operator<<(QDebug dbg, QtPulseAudio::ConnectionState state)
     }
 
     dbg.nospace() << "QtPulseAudio::ConnectionState(" << str << ")";
+
+    return dbg.space();
+}
+
+QDebug operator<<(QDebug dbg, QtPulseAudio::PortAvailability portAvailability)
+{
+    QByteArray str;
+
+    switch (portAvailability)
+    {
+        case QtPulseAudio::PortAvailable:
+            str.append("Available");
+            break;
+
+        case QtPulseAudio::PortNotAvailable:
+            str.append("NotAvailable");
+            break;
+
+        case QtPulseAudio::PortUnknown:
+            str.append("Unknown");
+            break;
+    }
+
+    dbg.nospace() << "QtPulseAudio::PortAvailability(" << str << ")";
 
     return dbg.space();
 }

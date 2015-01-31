@@ -55,6 +55,12 @@ namespace QtPulseAudio
 
     Q_DECLARE_FLAGS(Facilities, Facility)
 
+    enum PortAvailability {
+        PortUnknown,
+        PortNotAvailable,
+        PortAvailable
+    };
+
     enum StreamType
     {
         Playback,
@@ -63,11 +69,13 @@ namespace QtPulseAudio
 }
 
 Q_DECLARE_METATYPE(QtPulseAudio::ConnectionState)
+Q_DECLARE_METATYPE(QtPulseAudio::PortAvailability)
 Q_DECLARE_METATYPE(QtPulseAudio::StreamType)
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QtPulseAudio::Facilities)
 
 QTPULSEAUDIO_DECL QDebug operator<<(QDebug dbg, QtPulseAudio::ConnectionState state);
+QTPULSEAUDIO_DECL QDebug operator<<(QDebug dbg, QtPulseAudio::PortAvailability portAvailability);
 QTPULSEAUDIO_DECL QDebug operator<<(QDebug dbg, QtPulseAudio::StreamType streamType);
 
 #endif // QTPULSEAUDIO_H
