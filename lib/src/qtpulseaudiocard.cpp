@@ -129,6 +129,11 @@ QString QtPulseAudioCard::name() const
 
 void QtPulseAudioCard::update()
 {
+    Q_D(QtPulseAudioCard);
+
+    pa_operation_unref(
+        pa_context_get_card_info_by_index(
+            d->context, d->index, &QtPulseAudioCardPrivate::onCardInfo, d));
 }
 
 //void PulseAudioCard::update(const pa_card_info* paCardInfo)

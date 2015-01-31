@@ -19,30 +19,39 @@
 #ifndef QTPULSEAUDIOCARDPRIVATE_H
 #define QTPULSEAUDIOCARDPRIVATE_H
 
+#include <QHash>
+#include <QSet>
 #include <QString>
 
 #include <pulse/introspect.h>
 
+#include <qtpulseaudio/qtpulseaudiocard.h>
+
 #include "qtpulseaudiofacilityprivate.h"
+
+class QtPulseAudioCardProfile;
 
 class QtPulseAudioCardPrivate : protected QtPulseAudioFacilityPrivate
 {
     Q_DISABLE_COPY(QtPulseAudioCardPrivate)
+    Q_DECLARE_PUBLIC(QtPulseAudioCard)
 
-    friend class QtPulseAudioCard;
+    static void onCardInfo(
+            pa_context* context, const pa_card_info* cardInfo, int eol, void* userData);
 
 private:
     explicit QtPulseAudioCardPrivate(const QtPulseAudioData& pulseAudioData);
     ~QtPulseAudioCardPrivate();
 
 private:
-//    PulseAudioCardProfile* activeProfile;
+    QtPulseAudioCardProfile* activeProfile;
 //    QString driver;
     quint32 index;
     QString name;
 //    quint32 ownerModule;
-//    QSet< PulseAudioCardProfile* > profiles;  // this one owns the pointers
-//    QHash< QString, PulseAudioCardProfile* > profilesByName;
+
+    QSet< QtPulseAudioCardProfile* > profiles;
+    QHash< QString, QtPulseAudioCardProfile* > profilesByName;
 //    QHash< QString, QVariant> properties;
 };
 
