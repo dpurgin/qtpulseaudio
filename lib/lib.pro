@@ -43,6 +43,7 @@ SOURCES += \
     src/qtpulseaudiofacility.cpp \
     src/qtpulseaudiosinkprivate.cpp \
     src/qtpulseaudiocardprivate.cpp \
+    src/qtpulseaudiocardprofile.cpp \
     src/qtpulseaudiofacilityprivate.cpp \
     src/qtpulseaudiosinkport.cpp
 
@@ -50,6 +51,7 @@ HEADERS += \
     src/qtpulseaudiodata.h \
     include/qtpulseaudio/qtpulseaudio.h \
     include/qtpulseaudio/qtpulseaudiocard.h \
+    include/qtpulseaudio/qtpulseaudiocardprofile.h \
     include/qtpulseaudio/qtpulseaudioconfig.h \
     include/qtpulseaudio/qtpulseaudioconnnection.h \
     include/qtpulseaudio/qtpulseaudiofacility.h \
