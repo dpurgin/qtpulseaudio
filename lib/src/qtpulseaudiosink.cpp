@@ -34,7 +34,7 @@ void registerSinkFacility()
 Q_CONSTRUCTOR_FUNCTION(registerSinkFacility)
 
 QtPulseAudioSink::QtPulseAudioSink(const QtPulseAudioData& data)
-    : QtPulseAudioFacility(new QtPulseAudioSinkPrivate(data))
+    : QtPulseAudioFacility(new QtPulseAudioSinkPrivate(data), this)
 {
     qDebug() << "Discovered sink:" << index() << name();
 }
@@ -50,8 +50,11 @@ QtPulseAudioFacility* QtPulseAudioSink::create(const QtPulseAudioData &data)
 
 void QtPulseAudioSink::update()
 {
-//    pa_operation_unref(
-//        pa_context_get_sink_info_by_index(d->pulseAudioData, d->index, ))
+    Q_D(QtPulseAudioSink);
+
+    pa_operation_unref(
+        pa_context_get_sink_info_by_index(
+            d->context, d->index, &QtPulseAudioSinkPrivate::onSinkInfo, d));
 }
 
 //#include <QDebug>

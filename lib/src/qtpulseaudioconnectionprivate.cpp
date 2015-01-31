@@ -150,7 +150,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
 {
     Q_UNUSED(context);
 
-    QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(d);
+    QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
 
     int facility = eventData & PA_SUBSCRIPTION_EVENT_FACILITY_MASK;
     int event = eventData & PA_SUBSCRIPTION_EVENT_TYPE_MASK;
@@ -158,7 +158,13 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
     if (facility == PA_SUBSCRIPTION_EVENT_SINK && d->facilities.testFlag(QtPulseAudio::Sink))
     {
         if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
-            d->sinksByIndex[idx]->update();
+        {
+            qDebug() << d->sinksByIndex.size();
+
+            QtPulseAudioSink* sink = d->sinksByIndex[idx];
+
+            sink->update();
+        }
     }
 
     qDebug() << "EventType: " << event << ", idx: " << idx;

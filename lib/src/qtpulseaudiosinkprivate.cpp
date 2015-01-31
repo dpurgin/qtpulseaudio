@@ -19,14 +19,46 @@
 #include "qtpulseaudiosinkprivate.h"
 
 QtPulseAudioSinkPrivate::QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData)
-    : QtPulseAudioFacilityPrivate(pulseAudioData)
+    : QtPulseAudioFacilityPrivate(pulseAudioData),
+      activePort(NULL)
 {
     const pa_sink_info* sinkInfo = reinterpret_cast< const pa_sink_info* >(pulseAudioData.data);
 
     index = sinkInfo->index;
     name = QString::fromUtf8(sinkInfo->name);
+
+    for (quint32 i = 0; i < sinkInfo->n_ports; i++)
+    {
+        QtPulseAudioSinkPort* port =
+            new QtPulseAudioSinkPort(QtPulseAudioData(pulseAudioData.context, sinkInfo->ports[i]));
+
+        ports.insert(port);
+        portsByName.insert(port->name(), port);
+    }
+
+    if (sinkInfo->active_port)
+        activePort = portsByName.value(QString::fromUtf8(sinkInfo->active_port->name), NULL);
 }
 
 QtPulseAudioSinkPrivate::~QtPulseAudioSinkPrivate()
 {
+    foreach (QtPulseAudioSinkPort* port, ports)
+        delete port;
+}
+
+void QtPulseAudioSinkPrivate::onSinkInfo(
+        pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData)
+{
+    Q_UNUSED(context);
+    Q_UNUSED(eol);
+
+    QtPulseAudioSinkPrivate* const d = reinterpret_cast< QtPulseAudioSinkPrivate* const >(userData);
+
+
+    if (sinkInfo->active_port && d->activePort &&
+            d->activePort->name() != QString::fromUtf8(sinkInfo->active_port->name))
+    {
+        d->activePort = d->portsByName.value(QString::fromUtf8(sinkInfo->active_port->name), NULL);
+        emit d->q_func()->activePortChanged(d->activePort? d->activePort->name(): QString());
+    }
 }

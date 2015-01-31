@@ -47,8 +47,8 @@ public:
 
 //    void update(const pa_sink_info* sinkInfo);
 
-//signals:
-//    void activePortChanged(const PulseAudioSinkPort* activePort);
+signals:
+    void activePortChanged(const QString& name);
 
 //public slots:
 

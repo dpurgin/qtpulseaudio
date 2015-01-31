@@ -21,23 +21,38 @@
 
 #include <QtGlobal>
 #include <QDebug>
+#include <QHash>
+#include <QSet>
 #include <QString>
 
 #include <pulse/introspect.h>
+
+#include <qtpulseaudio/qtpulseaudiosink.h>
+#include <qtpulseaudio/qtpulseaudiosinkport.h>
 
 #include "qtpulseaudiofacilityprivate.h"
 
 class QtPulseAudioSinkPrivate : protected QtPulseAudioFacilityPrivate
 {
-    friend class QtPulseAudioSink;
+    Q_DECLARE_PUBLIC(QtPulseAudioSink)
+
+private:
+    static void onSinkInfo(
+            pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
 
 private:
     QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData);
     ~QtPulseAudioSinkPrivate();
 
 private:
+
     quint32 index;
     QString name;
+
+    QtPulseAudioSinkPort* activePort;
+
+    QSet< QtPulseAudioSinkPort* > ports;
+    QHash< QString, QtPulseAudioSinkPort* > portsByName;
 };
 
 #endif // QTPULSEAUDIOSINKPRIVATE_H
