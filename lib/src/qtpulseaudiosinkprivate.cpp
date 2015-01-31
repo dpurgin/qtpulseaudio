@@ -50,15 +50,19 @@ void QtPulseAudioSinkPrivate::onSinkInfo(
         pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData)
 {
     Q_UNUSED(context);
-    Q_UNUSED(eol);
 
-    QtPulseAudioSinkPrivate* const d = reinterpret_cast< QtPulseAudioSinkPrivate* const >(userData);
-
-
-    if (sinkInfo->active_port && d->activePort &&
-            d->activePort->name() != QString::fromUtf8(sinkInfo->active_port->name))
+    if (!eol)
     {
-        d->activePort = d->portsByName.value(QString::fromUtf8(sinkInfo->active_port->name), NULL);
-        emit d->q_func()->activePortChanged(d->activePort? d->activePort->name(): QString());
+        QtPulseAudioSinkPrivate* const d =
+                reinterpret_cast< QtPulseAudioSinkPrivate* const >(userData);
+
+        if (sinkInfo->active_port && d->activePort &&
+                d->activePort->name() != QString::fromUtf8(sinkInfo->active_port->name))
+        {
+            d->activePort = d->portsByName.value(
+                                QString::fromUtf8(sinkInfo->active_port->name), NULL);
+
+            emit d->q_func()->activePortChanged(d->activePort? d->activePort->name(): QString());
+        }
     }
 }
