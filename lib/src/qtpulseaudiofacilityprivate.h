@@ -23,18 +23,23 @@
 
 #include "qtpulseaudiodata.h"
 
+class QtPulseAudioFacility;
+
 class QtPulseAudioFacilityPrivate
 {
     friend class QtPulseAudioFacility;
 
 protected:
-    QtPulseAudioFacilityPrivate(const QtPulseAudioData& pulseAudioData)
-        : context(pulseAudioData.context)
+    explicit QtPulseAudioFacilityPrivate(const QtPulseAudioData& pulseAudioData)
+        : context(pulseAudioData.context),
+          q_ptr(NULL)
     {
     }
 
 protected:
     pa_context* context;
+
+    QtPulseAudioFacility* q_ptr;
 };
 
 #endif // QTPULSEAUDIOFACILITYPRIVATE_H

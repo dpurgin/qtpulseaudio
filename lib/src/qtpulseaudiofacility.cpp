@@ -20,10 +20,12 @@
 
 #include "qtpulseaudiofacilityprivate.h"
 
-QtPulseAudioFacility::QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const dptr)
+QtPulseAudioFacility::QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const dptr,
+                                           QtPulseAudioFacility* const qptr)
     : QObject(NULL),
       d_ptr(dptr)
 {
+    d_ptr->q_ptr = qptr;
 }
 
 QtPulseAudioFacility::~QtPulseAudioFacility()

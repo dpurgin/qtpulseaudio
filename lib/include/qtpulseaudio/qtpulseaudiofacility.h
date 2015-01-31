@@ -29,7 +29,8 @@ class QtPulseAudioFacility : public QObject
     Q_OBJECT
 
 public:
-    explicit QtPulseAudioFacility(QtPulseAudioFacilityPrivate* const dptr);
+    explicit QtPulseAudioFacility(
+            QtPulseAudioFacilityPrivate* const dptr, QtPulseAudioFacility* const qptr);
     virtual ~QtPulseAudioFacility();
 
     virtual void update() = 0;
