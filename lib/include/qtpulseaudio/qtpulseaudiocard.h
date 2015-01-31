@@ -24,6 +24,7 @@
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
 class QtPulseAudioCardPrivate;
+class QtPulseAudioCardProfile;
 class QtPulseAudioData;
 
 class QtPulseAudioCard : public QtPulseAudioFacility
@@ -38,7 +39,7 @@ class QtPulseAudioCard : public QtPulseAudioFacility
 public:
     void update();
 
-//    PulseAudioCardProfile* activeProfile() const;
+    QtPulseAudioCardProfile* activeProfile() const;
 //    void setActiveProfile(const QString& activeProfile);
 
 //    QString driver() const;
@@ -49,6 +50,7 @@ public:
 //    void update(const pa_card_info* paCardInfo);
 
 signals:
+    void activeProfileChanged(const QString& profileName);
 //    void activeProfileChanged(const PulseAudioCardProfile* activeProfile);
 //    void driverChanged(const QString& driver);
 //    void nameChanged(const QString& name);
