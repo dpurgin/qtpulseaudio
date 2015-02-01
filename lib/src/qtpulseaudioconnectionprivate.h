@@ -26,6 +26,7 @@
 
 class QtPulseAudioCard;
 class QtPulseAudioSink;
+class QtPulseAudioSource;
 
 class QtPulseAudioConnection::QtPulseAudioConnectionPrivate
 {
@@ -44,6 +45,9 @@ private:
 
     static void onSinkInfoList(
         pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
+
+    static void onSourceInfoList(
+        pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData);
 
 private:
     QtPulseAudioConnectionPrivate(QtPulseAudioConnection* q_ptr)
@@ -115,6 +119,10 @@ private:
     QSet< QtPulseAudioSink* > sinks;
     QHash< quint32, QtPulseAudioSink* > sinksByIndex;
     QHash< QString, QtPulseAudioSink* > sinksByName;
+
+    QSet< QtPulseAudioSource* > sources;
+    QHash< quint32, QtPulseAudioSource* > sourcesByIndex;
+    QHash< QString, QtPulseAudioSource* > sourcesByName;
 
     QHash< QString, QtPulseAudioStream* > streamsByName;
 };

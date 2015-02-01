@@ -20,6 +20,7 @@
 
 #include <qtpulseaudio/qtpulseaudiocard.h>
 #include <qtpulseaudio/qtpulseaudiosink.h>
+#include <qtpulseaudio/qtpulseaudiosource.h>
 
 #include "qtpulseaudiofacilityfactory.h"
 
@@ -105,6 +106,19 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextStateChange
                         d));
             }
 
+            if (d->facilities.testFlag(QtPulseAudio::Source) ||
+                    d->facilities.testFlag(QtPulseAudio::AllFacilities))
+            {
+                d->wantFacilities |= QtPulseAudio::Source;
+                subscriptionMask |= PA_SUBSCRIPTION_MASK_SOURCE;
+
+                pa_operation_unref(
+                    pa_context_get_source_info_list(
+                        d->context,
+                        &QtPulseAudioConnectionPrivate::onSourceInfoList,
+                        d));
+            }
+
             pa_context_set_subscribe_callback(
                 d->context,
                 &QtPulseAudioConnectionPrivate::onContextSubscriptionEvent,
@@ -185,9 +199,10 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
 
     if (!eol)
     {
-        QtPulseAudioSink* sink = dynamic_cast< QtPulseAudioSink* >(
-            qtpaFacilityFactory->create(QtPulseAudio::Sink,
-                                        QtPulseAudioData(d->context, sinkInfo)));
+        QtPulseAudioSink* sink =
+                dynamic_cast< QtPulseAudioSink* >(
+                    qtpaFacilityFactory->create(QtPulseAudio::Sink,
+                                                QtPulseAudioData(d->context, sinkInfo)));
 
         d->sinks.insert(sink);
         d->sinksByIndex.insert(sink->index(), sink);
@@ -197,5 +212,26 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
     {
         d->queriedFacilities |= QtPulseAudio::Sink;
         d->checkInitialized();
+    }
+}
+
+void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSourceInfoList(
+        pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData)
+{
+    Q_UNUSED(context);
+
+    QtPulseAudioConnectionPrivate* const d =
+            reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    if (!eol)
+    {
+        QtPulseAudioSource* source =
+                dynamic_cast< QtPulseAudioSource* >(
+                    qtpaFacilityFactory->create(QtPulseAudio::Source,
+                                                QtPulseAudioData(d->context, sourceInfo)));
+
+        d->sources.insert(source);
+        d->sourcesByIndex.insert(source->index(), source);
+        d->sourcesByName.insert(source->name(), source);
     }
 }
