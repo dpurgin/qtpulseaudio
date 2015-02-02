@@ -34,6 +34,7 @@
 
 class QtPulseAudioSinkPrivate : protected QtPulseAudioFacilityPrivate
 {
+    Q_DISABLE_COPY(QtPulseAudioSinkPrivate)
     Q_DECLARE_PUBLIC(QtPulseAudioSink)
 
 private:
@@ -42,7 +43,7 @@ private:
 
 private:
     QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData);
-    virtual ~QtPulseAudioSinkPrivate();
+    ~QtPulseAudioSinkPrivate();
 
 private:
 

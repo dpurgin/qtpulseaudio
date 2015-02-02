@@ -40,7 +40,7 @@ private:
 
 private:
     QtPulseAudioSourcePrivate(const QtPulseAudioData& pulseAudioData);
-    virtual ~QtPulseAudioSourcePrivate();
+    ~QtPulseAudioSourcePrivate();
 
 private:
     quint32 index;
