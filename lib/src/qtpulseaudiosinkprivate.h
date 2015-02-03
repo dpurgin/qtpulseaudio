@@ -43,7 +43,7 @@ private:
 
 private:
     QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData);
-    ~QtPulseAudioSinkPrivate();
+    virtual ~QtPulseAudioSinkPrivate();
 
 private:
 

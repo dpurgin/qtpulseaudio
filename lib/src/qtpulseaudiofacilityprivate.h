@@ -35,6 +35,9 @@ protected:
           q_ptr(NULL)
     {
     }
+    virtual ~QtPulseAudioFacilityPrivate()
+    {
+    }
 
 protected:
     pa_context* context;

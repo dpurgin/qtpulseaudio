@@ -33,15 +33,16 @@ class QtPulseAudioCardProfile;
 
 class QtPulseAudioCardPrivate : public QtPulseAudioFacilityPrivate
 {
+protected:
+    explicit QtPulseAudioCardPrivate(const QtPulseAudioData& pulseAudioData);
+    virtual ~QtPulseAudioCardPrivate();
+
+private:
     Q_DISABLE_COPY(QtPulseAudioCardPrivate)
     Q_DECLARE_PUBLIC(QtPulseAudioCard)
 
     static void onCardInfo(
             pa_context* context, const pa_card_info* cardInfo, int eol, void* userData);
-
-protected:
-    explicit QtPulseAudioCardPrivate(const QtPulseAudioData& pulseAudioData);
-    ~QtPulseAudioCardPrivate();
 
 private:
     QtPulseAudioCardProfile* activeProfile;
