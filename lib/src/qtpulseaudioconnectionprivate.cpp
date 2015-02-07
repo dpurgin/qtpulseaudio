@@ -24,7 +24,7 @@
 
 #include "qtpulseaudiofacilityfactory.h"
 
-QtPulseAudioConnection::QtPulseAudioConnectionPrivate::~QtPulseAudioConnectionPrivate()
+QtPulseAudioConnectionPrivate::~QtPulseAudioConnectionPrivate()
 {
     cardsByIndex.clear();
     cardsByName.clear();
@@ -32,7 +32,7 @@ QtPulseAudioConnection::QtPulseAudioConnectionPrivate::~QtPulseAudioConnectionPr
 //    qDeleteAll(cards);
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onCardsInfoList(
+void QtPulseAudioConnectionPrivate::onCardsInfoList(
         pa_context* context, const pa_card_info* cardInfo, int eol, void* userData)
 {
     Q_UNUSED(context)
@@ -55,7 +55,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onCardsInfoList(
     }
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextStateChange(
+void QtPulseAudioConnectionPrivate::onContextStateChange(
         pa_context* context, void* userData)
 {
     Q_UNUSED(context);
@@ -145,7 +145,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextStateChange
     }
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscription(
+void QtPulseAudioConnectionPrivate::onContextSubscription(
         pa_context *context, int success, void *userData)
 {
     Q_UNUSED(context)
@@ -164,7 +164,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
     d->checkInitialized();
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
+void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
         pa_context *context, pa_subscription_event_type_t eventData, uint32_t idx, void *userData)
 {
     Q_UNUSED(context);
@@ -202,7 +202,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
     qDebug() << "EventType: " << event << ", idx: " << idx;
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
+void QtPulseAudioConnectionPrivate::onSinkInfoList(
         pa_context *context, const pa_sink_info *sinkInfo, int eol, void *userData)
 {
     Q_UNUSED(context)
@@ -228,7 +228,7 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSinkInfoList(
     }
 }
 
-void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onSourceInfoList(
+void QtPulseAudioConnectionPrivate::onSourceInfoList(
         pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData)
 {
     Q_UNUSED(context);

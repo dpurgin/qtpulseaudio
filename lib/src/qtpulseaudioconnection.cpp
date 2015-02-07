@@ -16,7 +16,7 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-#include <qtpulseaudio/qtpulseaudioconnnection.h>
+#include <qtpulseaudio/qtpulseaudioconnection.h>
 
 #include <qtpulseaudio/qtpulseaudiocard.h>
 #include <qtpulseaudio/qtpulseaudiostream.h>

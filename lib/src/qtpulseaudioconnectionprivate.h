@@ -19,7 +19,7 @@
 #ifndef QTPULSEAUDIOCONTEXTPRIVATE_H
 #define QTPULSEAUDIOCONTEXTPRIVATE_H
 
-#include <qtpulseaudio/qtpulseaudioconnnection.h>
+#include <qtpulseaudio/qtpulseaudioconnection.h>
 
 #include <pulse/introspect.h>
 #include <pulse/thread-mainloop.h>
@@ -28,7 +28,7 @@ class QtPulseAudioCard;
 class QtPulseAudioSink;
 class QtPulseAudioSource;
 
-class QtPulseAudioConnection::QtPulseAudioConnectionPrivate
+class QtPulseAudioConnectionPrivate
 {
     friend class QtPulseAudioConnection;
 
