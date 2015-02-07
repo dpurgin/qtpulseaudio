@@ -43,9 +43,10 @@ QtPulseAudioSink::~QtPulseAudioSink()
 {
 }
 
-QtPulseAudioFacility* QtPulseAudioSink::create(const QtPulseAudioData &data)
+QSharedPointer< QtPulseAudioFacility > QtPulseAudioSink::create(const QtPulseAudioData &data)
 {
-    return new QtPulseAudioSink(data);
+    return QSharedPointer< QtPulseAudioSink >(new QtPulseAudioSink(data),
+                                              &QtPulseAudioFacility::deleterMethod);
 }
 
 void QtPulseAudioSink::update()

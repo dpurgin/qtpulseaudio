@@ -18,6 +18,11 @@
 
 #include "qtpulseaudiofacilityfactory.h"
 
+#include <qtpulseaudio/qtpulseaudiofacility.h>
+
+#include <QMutex>
+#include <QMutexLocker>
+
 QtPulseAudioFacilityFactory* QtPulseAudioFacilityFactory::mInstance = NULL;
 
 QtPulseAudioFacilityFactory::QtPulseAudioFacilityFactory()
@@ -43,10 +48,10 @@ QtPulseAudioFacilityFactory* QtPulseAudioFacilityFactory::instance()
     return mInstance;
 }
 
-QtPulseAudioFacility* QtPulseAudioFacilityFactory::create(
+QSharedPointer< QtPulseAudioFacility > QtPulseAudioFacilityFactory::create(
         QtPulseAudio::Facility facility, const QtPulseAudioData& data)
 {
-    QtPulseAudioFacility* result = NULL;
+    QSharedPointer< QtPulseAudioFacility > result;
     FactoryMethod method = mFactoryMethods.value(facility, NULL);
 
     if (method)

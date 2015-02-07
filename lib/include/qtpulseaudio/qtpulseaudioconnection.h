@@ -20,6 +20,7 @@
 #define QTPULSEAUDIOCONNECTION_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include <qtpulseaudio/qtpulseaudioconfig.h>
 #include <qtpulseaudio/qtpulseaudio.h>
@@ -41,8 +42,8 @@ public:
     QtPulseAudioStream* createStream(QtPulseAudio::StreamType streamType,
                                      const QString& name = QString());
 
-    QtPulseAudioCard* cardByIndex(quint32 index) const;
-    QtPulseAudioCard* cardByName(const QString& name) const;
+    QSharedPointer< QtPulseAudioCard > cardByIndex(quint32 index) const;
+    QSharedPointer< QtPulseAudioCard > cardByName(const QString& name) const;
 
     bool connectToServer(const QString& server = QString());
 
@@ -52,8 +53,8 @@ public:
     QtPulseAudio::ConnectionState state() const;
 
 signals:
-    void cardAdded(int index);
-    void cardRemoved(int index);
+    void cardAdded(QSharedPointer< QtPulseAudioCard > card);
+    void cardRemoved(QSharedPointer< QtPulseAudioCard > card);
 
     void sinkAdded(int index);
     void sinkRemoved(int index);

@@ -42,9 +42,10 @@ QtPulseAudioSource::~QtPulseAudioSource()
 {
 }
 
-QtPulseAudioFacility* QtPulseAudioSource::create(const QtPulseAudioData& data)
+QSharedPointer< QtPulseAudioFacility > QtPulseAudioSource::create(const QtPulseAudioData& data)
 {
-    return new QtPulseAudioSource(data);
+    return QSharedPointer< QtPulseAudioSource >(new QtPulseAudioSource(data),
+                                                &QtPulseAudioFacility::deleterMethod);
 }
 
 quint32 QtPulseAudioSource::index() const

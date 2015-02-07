@@ -32,7 +32,7 @@ class QTPULSEAUDIO_DECL QtPulseAudioSource : public QtPulseAudioFacility
 
     friend void registerSourceFacility();
 
-    static QtPulseAudioFacility* create(const QtPulseAudioData& data);
+    static QSharedPointer< QtPulseAudioFacility > create(const QtPulseAudioData& data);
 
 public:
     void update();

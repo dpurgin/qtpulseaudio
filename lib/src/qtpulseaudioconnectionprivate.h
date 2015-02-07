@@ -112,15 +112,15 @@ private:
     QtPulseAudio::ConnectionState state;
     QString server;
 
-    QSet< QtPulseAudioCard* > cards;
+    QHash< QtPulseAudioCard*, QSharedPointer< QtPulseAudioCard > > cards;
     QHash< quint32, QtPulseAudioCard* > cardsByIndex;
     QHash< QString, QtPulseAudioCard* > cardsByName;
 
-    QSet< QtPulseAudioSink* > sinks;
+    QHash< QtPulseAudioSink*, QSharedPointer< QtPulseAudioSink > > sinks;
     QHash< quint32, QtPulseAudioSink* > sinksByIndex;
     QHash< QString, QtPulseAudioSink* > sinksByName;
 
-    QSet< QtPulseAudioSource* > sources;
+    QHash< QtPulseAudioSource*, QSharedPointer< QtPulseAudioSource > > sources;
     QHash< quint32, QtPulseAudioSource* > sourcesByIndex;
     QHash< QString, QtPulseAudioSource* > sourcesByName;
 

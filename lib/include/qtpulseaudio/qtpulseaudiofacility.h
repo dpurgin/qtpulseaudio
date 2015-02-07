@@ -29,6 +29,16 @@ class QtPulseAudioFacility : public QObject
     Q_OBJECT
 
 public:
+    static void deleterMethod(QtPulseAudioFacility* facility)
+    {
+        if (facility)
+        {
+            delete facility;
+            facility = 0;
+        }
+    }
+
+public:
     explicit QtPulseAudioFacility(
             QtPulseAudioFacilityPrivate* const dptr, QtPulseAudioFacility* const qptr);
     virtual ~QtPulseAudioFacility();

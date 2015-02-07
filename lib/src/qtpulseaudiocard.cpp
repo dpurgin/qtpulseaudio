@@ -60,9 +60,11 @@ QtPulseAudioCard::~QtPulseAudioCard()
     delete d;
 }
 
-QtPulseAudioFacility* QtPulseAudioCard::create(const QtPulseAudioData& pulseAudioData)
+QSharedPointer< QtPulseAudioFacility > QtPulseAudioCard::create(
+        const QtPulseAudioData& pulseAudioData)
 {
-    return new QtPulseAudioCard(pulseAudioData);
+    return QSharedPointer< QtPulseAudioFacility >(new QtPulseAudioCard(pulseAudioData),
+                                                  &QtPulseAudioFacility::deleterMethod);
 }
 
 //PulseAudioCard::PulseAudioCard(pa_context* context, const pa_card_info* paCardInfo, QObject *parent)

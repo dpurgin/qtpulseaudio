@@ -20,25 +20,25 @@
 #define QTPULSEAUDIOFACILITYFACTORY_H
 
 #include <qtpulseaudio/qtpulseaudio.h>
-#include <qtpulseaudio/qtpulseaudiofacility.h>
 
 #include <QMap>
-#include <QMutex>
-#include <QMutexLocker>
-
-#include "qtpulseaudiodata.h"
+#include <QSharedPointer>
 
 #define qtpaFacilityFactory (QtPulseAudioFacilityFactory::instance())
 
+class QtPulseAudioData;
+class QtPulseAudioFacility;
+
 class QtPulseAudioFacilityFactory
 {
-    typedef QtPulseAudioFacility* (*FactoryMethod)(const QtPulseAudioData& data);
+    typedef QSharedPointer< QtPulseAudioFacility > (*FactoryMethod)(const QtPulseAudioData& data);
     typedef QMap< QtPulseAudio::Facility, FactoryMethod > FactoryMethods;
 
 public:
     static QtPulseAudioFacilityFactory* instance();
 
-    QtPulseAudioFacility* create(QtPulseAudio::Facility facility, const QtPulseAudioData& data);
+    QSharedPointer< QtPulseAudioFacility > create(
+            QtPulseAudio::Facility facility, const QtPulseAudioData& data);
 
     void registerFacility(QtPulseAudio::Facility facility, FactoryMethod method);
 

@@ -20,6 +20,7 @@
 #define QTPULSEAUDIOSINK_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
@@ -33,8 +34,9 @@ class QtPulseAudioSink : public QtPulseAudioFacility
     Q_DISABLE_COPY(QtPulseAudioSink)
 
     friend void registerSinkFacility();
+    friend class QtPulseAudioConnectionPrivate;
 
-    static QtPulseAudioFacility* create(const QtPulseAudioData& data);
+    static QSharedPointer< QtPulseAudioFacility > create(const QtPulseAudioData& data);
 
 public:
     void update();

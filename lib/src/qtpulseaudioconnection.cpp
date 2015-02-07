@@ -32,8 +32,6 @@
 #include <QHash>
 #include <QStringBuilder>
 
-#include <QWaitCondition>
-
 #include "qtpulseaudioconnectionprivate.h"
 #include "qtpulseaudiodata.h"
 
@@ -61,14 +59,14 @@ QtPulseAudioConnection::~QtPulseAudioConnection()
     delete d;
 }
 
-QtPulseAudioCard* QtPulseAudioConnection::cardByIndex(quint32 index) const
+QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByIndex(quint32 index) const
 {
-    return d->cardsByIndex.value(index, NULL);
+    return d->cards.value(d->cardsByIndex.value(index, NULL), QSharedPointer< QtPulseAudioCard >());
 }
 
-QtPulseAudioCard* QtPulseAudioConnection::cardByName(const QString& name) const
+QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByName(const QString& name) const
 {
-    return d->cardsByName.value(name, NULL);
+    return d->cards.value(d->cardsByName.value(name, NULL), QSharedPointer< QtPulseAudioCard >());
 }
 
 bool QtPulseAudioConnection::connectToServer(const QString& server)

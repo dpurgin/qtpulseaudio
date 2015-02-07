@@ -20,6 +20,7 @@
 #define QTPULSEAUDIOCARD_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
@@ -34,7 +35,7 @@ class QtPulseAudioCard : public QtPulseAudioFacility
 
     friend void registerCardFacility();
 
-    static QtPulseAudioFacility* create(const QtPulseAudioData& pulseAudioData);
+    static QSharedPointer< QtPulseAudioFacility > create(const QtPulseAudioData& pulseAudioData);
 
 public:
     void update();
