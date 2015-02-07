@@ -43,7 +43,7 @@ private:
     static void onContextSubscriptionEvent(
         pa_context* context, pa_subscription_event_type_t eventType, uint32_t idx, void* userData);
 
-    static void onSinkInfoList(
+    static void onSinkInfo(
         pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
 
     static void onSourceInfoList(

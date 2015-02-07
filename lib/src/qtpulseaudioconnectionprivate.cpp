@@ -107,7 +107,7 @@ void QtPulseAudioConnectionPrivate::onContextStateChange(
                 pa_operation_unref(
                     pa_context_get_sink_info_list(
                         d->context,
-                        &QtPulseAudioConnectionPrivate::onSinkInfoList,
+                        &QtPulseAudioConnectionPrivate::onSinkInfo,
                         d));
             }
 
@@ -181,25 +181,33 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
 
     if (facility == PA_SUBSCRIPTION_EVENT_SINK && d->facilities.testFlag(QtPulseAudio::Sink))
     {
-        if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
+        if (event == PA_SUBSCRIPTION_EVENT_NEW)
         {
-            qDebug() << d->sinksByIndex.size();
-
-            QtPulseAudioSink* sink = d->sinksByIndex[idx];
-
-            sink->update();
+            pa_operation_unref(
+                pa_context_get_sink_info_by_index(
+                    context, idx, &QtPulseAudioConnectionPrivate::onSinkInfo, d));
         }
-        else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
+        else if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
         {
             QtPulseAudioSink* sink = d->sinksByIndex.value(idx, NULL);
 
             if (sink)
-            {
-                d->sinksByIndex.remove(idx);
-                d->sinksByName.remove(sink->name());
-                d->sinks.remove(sink);
+                sink->update();
+        }
+        else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
+        {
+            QSharedPointer< QtPulseAudioSink > sink(
+                d->sinks.value(
+                    d->sinksByIndex.value(idx, NULL),
+                    QSharedPointer< QtPulseAudioSink >()));
 
-                delete sink;
+            if (!sink.isNull())
+            {
+                d->sinksByIndex.remove(sink->index());
+                d->sinksByName.remove(sink->name());
+                d->sinks.remove(sink.data());
+
+                emit d->q->sinkRemoved(sink);
             }
         }
     }
@@ -207,7 +215,7 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
     qDebug() << "EventType: " << event << ", idx: " << idx;
 }
 
-void QtPulseAudioConnectionPrivate::onSinkInfoList(
+void QtPulseAudioConnectionPrivate::onSinkInfo(
         pa_context *context, const pa_sink_info *sinkInfo, int eol, void *userData)
 {
     Q_UNUSED(context)
@@ -227,8 +235,11 @@ void QtPulseAudioConnectionPrivate::onSinkInfoList(
         d->sinks.insert(sink.data(), sink);
         d->sinksByIndex.insert(sink->index(), sink.data());
         d->sinksByName.insert(sink->name(), sink.data());
+
+        if (d->state == QtPulseAudio::Connected)
+            emit d->q->sinkAdded(sink);
     }
-    else
+    else if (d->state != QtPulseAudio::Connected)
     {
         d->queriedFacilities |= QtPulseAudio::Sink;
         d->checkInitialized();
