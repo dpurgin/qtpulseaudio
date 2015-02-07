@@ -55,7 +55,7 @@ HEADERS += \
     include/qtpulseaudio/qtpulseaudiocard.h \
     include/qtpulseaudio/qtpulseaudiocardprofile.h \
     include/qtpulseaudio/qtpulseaudioconfig.h \
-    include/qtpulseaudio/qtpulseaudioconnnection.h \
+    include/qtpulseaudio/qtpulseaudioconnection.h \
     include/qtpulseaudio/qtpulseaudiofacility.h \
     include/qtpulseaudio/qtpulseaudiosink.h \
     include/qtpulseaudio/qtpulseaudiosinkport.h \
