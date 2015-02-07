@@ -57,6 +57,8 @@ QtPulseAudioConnection::~QtPulseAudioConnection()
         pa_threaded_mainloop_stop(d->mainLoop);
         pa_threaded_mainloop_free(d->mainLoop);
     }
+
+    delete d;
 }
 
 QtPulseAudioCard* QtPulseAudioConnection::cardByIndex(quint32 index) const
