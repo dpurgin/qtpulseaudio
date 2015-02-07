@@ -25,6 +25,7 @@
 #include <qtpulseaudio/qtpulseaudio.h>
 
 class QtPulseAudioCard;
+class QtPulseAudioConnectionPrivate;
 class QtPulseAudioSink;
 class QtPulseAudioStream;
 
@@ -64,7 +65,6 @@ signals:
     void stateChanged(QtPulseAudio::ConnectionState state);
 
 private:        
-    class QtPulseAudioConnectionPrivate;
     QtPulseAudioConnectionPrivate* d;
 };
 
