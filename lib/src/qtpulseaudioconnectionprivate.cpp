@@ -184,6 +184,19 @@ void QtPulseAudioConnection::QtPulseAudioConnectionPrivate::onContextSubscriptio
 
             sink->update();
         }
+        else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
+        {
+            QtPulseAudioSink* sink = d->sinksByIndex.value(idx, NULL);
+
+            if (sink)
+            {
+                d->sinksByIndex.remove(idx);
+                d->sinksByName.remove(sink->name());
+                d->sinks.remove(sink);
+
+                delete sink;
+            }
+        }
     }
 
     qDebug() << "EventType: " << event << ", idx: " << idx;
