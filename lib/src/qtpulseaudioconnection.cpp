@@ -61,12 +61,16 @@ QtPulseAudioConnection::~QtPulseAudioConnection()
 
 QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByIndex(quint32 index) const
 {
-    return d->cards.value(d->cardsByIndex.value(index, NULL), QSharedPointer< QtPulseAudioCard >());
+    return d->cards.value(
+                d->cardsByIndex.value(index, NULL),
+                QSharedPointer< QtPulseAudioCard >());
 }
 
 QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByName(const QString& name) const
 {
-    return d->cards.value(d->cardsByName.value(name, NULL), QSharedPointer< QtPulseAudioCard >());
+    return d->cards.value(
+                d->cardsByName.value(name, NULL),
+                QSharedPointer< QtPulseAudioCard >());
 }
 
 bool QtPulseAudioConnection::connectToServer(const QString& server)
@@ -127,14 +131,18 @@ QtPulseAudioStream* QtPulseAudioConnection::createStream(QtPulseAudio::StreamTyp
     return NULL;
 }
 
-QtPulseAudioSink* QtPulseAudioConnection::sinkByIndex(quint32 index) const
+QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByIndex(quint32 index) const
 {
-    return d->sinksByIndex.value(index, NULL);
+    return d->sinks.value(
+                d->sinksByIndex.value(index, NULL),
+                QSharedPointer< QtPulseAudioSink >());
 }
 
-QtPulseAudioSink* QtPulseAudioConnection::sinkByName(const QString& name) const
+QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByName(const QString& name) const
 {
-    return d->sinksByName.value(name, NULL);
+    return d->sinks.value(
+                d->sinksByName.value(name, NULL),
+                QSharedPointer< QtPulseAudioSink >());
 }
 
 QtPulseAudio::ConnectionState QtPulseAudioConnection::state() const

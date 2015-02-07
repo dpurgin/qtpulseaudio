@@ -47,8 +47,8 @@ public:
 
     bool connectToServer(const QString& server = QString());
 
-    QtPulseAudioSink* sinkByIndex(quint32 index) const;
-    QtPulseAudioSink* sinkByName(const QString& name) const;
+    QSharedPointer< QtPulseAudioSink > sinkByIndex(quint32 index) const;
+    QSharedPointer< QtPulseAudioSink > sinkByName(const QString& name) const;
 
     QtPulseAudio::ConnectionState state() const;
 
@@ -56,8 +56,8 @@ signals:
     void cardAdded(QSharedPointer< QtPulseAudioCard > card);
     void cardRemoved(QSharedPointer< QtPulseAudioCard > card);
 
-    void sinkAdded(int index);
-    void sinkRemoved(int index);
+    void sinkAdded(QSharedPointer< QtPulseAudioSink > sink);
+    void sinkRemoved(QSharedPointer< QtPulseAudioSink > sink);
 
     void error(QString errorText);
     void failed();
