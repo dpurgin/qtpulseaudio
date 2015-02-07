@@ -54,6 +54,9 @@ signals:
     void cardAdded(int index);
     void cardRemoved(int index);
 
+    void sinkAdded(int index);
+    void sinkRemoved(int index);
+
     void error(QString errorText);
     void failed();
     void connecting();
