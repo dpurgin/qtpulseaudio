@@ -28,6 +28,7 @@
 class QtPulseAudioCard;
 class QtPulseAudioConnectionPrivate;
 class QtPulseAudioSink;
+class QtPulseAudioSource;
 class QtPulseAudioStream;
 
 class QTPULSEAUDIO_DECL QtPulseAudioConnection : public QObject
@@ -50,6 +51,9 @@ public:
     QSharedPointer< QtPulseAudioSink > sinkByIndex(quint32 index) const;
     QSharedPointer< QtPulseAudioSink > sinkByName(const QString& name) const;
 
+    QSharedPointer< QtPulseAudioSource > sourceByIndex(quint32 index) const;
+    QSharedPointer< QtPulseAudioSource > sourceByName(const QString& name) const;
+
     QtPulseAudio::ConnectionState state() const;
 
 signals:
@@ -58,6 +62,9 @@ signals:
 
     void sinkAdded(QSharedPointer< QtPulseAudioSink > sink);
     void sinkRemoved(QSharedPointer< QtPulseAudioSink > sink);
+
+    void sourceAdded(QSharedPointer< QtPulseAudioSource > source);
+    void sourceRemoved(QSharedPointer< QtPulseAudioSource > source);
 
     void error(QString errorText);
     void failed();

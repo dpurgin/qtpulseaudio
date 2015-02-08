@@ -33,7 +33,7 @@ class QtPulseAudioConnectionPrivate
     friend class QtPulseAudioConnection;
 
 private:
-    static void onCardsInfoList(
+    static void onCardInfo(
         pa_context* context, const pa_card_info* cardInfo, int eol, void* userData);
 
     static void onContextStateChange(pa_context* context, void* userData);
@@ -46,8 +46,13 @@ private:
     static void onSinkInfo(
         pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
 
-    static void onSourceInfoList(
+    static void onSourceInfo(
         pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData);
+
+    static void processCardEvent(int event, uint32_t idx, QtPulseAudioConnectionPrivate* d);
+    static void processSinkEvent(int event, uint32_t idx, QtPulseAudioConnectionPrivate* d);
+    static void processSourceEvent(int event, uint32_t idx, QtPulseAudioConnectionPrivate* d);
+
 
 private:
     QtPulseAudioConnectionPrivate(QtPulseAudioConnection* q_ptr)

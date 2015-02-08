@@ -33,7 +33,7 @@ QtPulseAudioConnectionPrivate::~QtPulseAudioConnectionPrivate()
 //    qDeleteAll(cards);
 }
 
-void QtPulseAudioConnectionPrivate::onCardsInfoList(
+void QtPulseAudioConnectionPrivate::onCardInfo(
         pa_context* context, const pa_card_info* cardInfo, int eol, void* userData)
 {
     Q_UNUSED(context)
@@ -52,8 +52,11 @@ void QtPulseAudioConnectionPrivate::onCardsInfoList(
         d->cards.insert(card.data(), card);
         d->cardsByIndex.insert(card->index(), card.data());
         d->cardsByName.insert(card->name(), card.data());
+
+        if (d->state == QtPulseAudio::Connected)
+            emit d->q->cardAdded(card);
     }
-    else
+    else if (d->state != QtPulseAudio::Connected)
     {
         d->queriedFacilities |= QtPulseAudio::Card;
         d->checkInitialized();
@@ -65,7 +68,8 @@ void QtPulseAudioConnectionPrivate::onContextStateChange(
 {
     Q_UNUSED(context);
 
-    QtPulseAudioConnectionPrivate* const d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+    QtPulseAudioConnectionPrivate* const d =
+            reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
 
     pa_context_state state = pa_context_get_state(context);
 
@@ -94,7 +98,7 @@ void QtPulseAudioConnectionPrivate::onContextStateChange(
                 pa_operation_unref(
                     pa_context_get_card_info_list(
                         d->context,
-                        &QtPulseAudioConnectionPrivate::onCardsInfoList,
+                        &QtPulseAudioConnectionPrivate::onCardInfo,
                         d));
             }
 
@@ -120,7 +124,7 @@ void QtPulseAudioConnectionPrivate::onContextStateChange(
                 pa_operation_unref(
                     pa_context_get_source_info_list(
                         d->context,
-                        &QtPulseAudioConnectionPrivate::onSourceInfoList,
+                        &QtPulseAudioConnectionPrivate::onSourceInfo,
                         d));
             }
 
@@ -179,37 +183,20 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
     int facility = eventData & PA_SUBSCRIPTION_EVENT_FACILITY_MASK;
     int event = eventData & PA_SUBSCRIPTION_EVENT_TYPE_MASK;
 
-    if (facility == PA_SUBSCRIPTION_EVENT_SINK && d->facilities.testFlag(QtPulseAudio::Sink))
+    if (facility == PA_SUBSCRIPTION_EVENT_CARD &&
+            d->facilities.testFlag(QtPulseAudio::Card))
     {
-        if (event == PA_SUBSCRIPTION_EVENT_NEW)
-        {
-            pa_operation_unref(
-                pa_context_get_sink_info_by_index(
-                    context, idx, &QtPulseAudioConnectionPrivate::onSinkInfo, d));
-        }
-        else if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
-        {
-            QtPulseAudioSink* sink = d->sinksByIndex.value(idx, NULL);
-
-            if (sink)
-                sink->update();
-        }
-        else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
-        {
-            QSharedPointer< QtPulseAudioSink > sink(
-                d->sinks.value(
-                    d->sinksByIndex.value(idx, NULL),
-                    QSharedPointer< QtPulseAudioSink >()));
-
-            if (!sink.isNull())
-            {
-                d->sinksByIndex.remove(sink->index());
-                d->sinksByName.remove(sink->name());
-                d->sinks.remove(sink.data());
-
-                emit d->q->sinkRemoved(sink);
-            }
-        }
+        processCardEvent(event, idx, d);
+    }
+    else if (facility == PA_SUBSCRIPTION_EVENT_SINK &&
+             d->facilities.testFlag(QtPulseAudio::Sink))
+    {
+        processSinkEvent(event, idx, d);
+    }
+    else if (facility == PA_SUBSCRIPTION_EVENT_SOURCE &&
+             d->facilities.testFlag(QtPulseAudio::Source))
+    {
+        processSourceEvent(event, idx, d);
     }
 
     qDebug() << "EventType: " << event << ", idx: " << idx;
@@ -246,7 +233,7 @@ void QtPulseAudioConnectionPrivate::onSinkInfo(
     }
 }
 
-void QtPulseAudioConnectionPrivate::onSourceInfoList(
+void QtPulseAudioConnectionPrivate::onSourceInfo(
         pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData)
 {
     Q_UNUSED(context);
@@ -266,5 +253,115 @@ void QtPulseAudioConnectionPrivate::onSourceInfoList(
         d->sources.insert(source.data(), source);
         d->sourcesByIndex.insert(source->index(), source.data());
         d->sourcesByName.insert(source->name(), source.data());
+
+        if (d->state == QtPulseAudio::Connected)
+            emit d->q->sourceAdded(source);
+    }
+    else if (d->state != QtPulseAudio::Connected)
+    {
+        d->queriedFacilities |= QtPulseAudio::Source;
+        d->checkInitialized();
+    }
+}
+
+void QtPulseAudioConnectionPrivate::processCardEvent(
+        int event, uint32_t idx, QtPulseAudioConnectionPrivate *d)
+{
+    if (event == PA_SUBSCRIPTION_EVENT_NEW)
+    {
+        pa_operation_unref(
+            pa_context_get_card_info_by_index(
+                d->context, idx, &QtPulseAudioConnectionPrivate::onCardInfo, d));
+    }
+    else if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
+    {
+        QtPulseAudioCard* card = d->cardsByIndex.value(idx, NULL);
+
+        if (card)
+            card->update();
+    }
+    else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
+    {
+        QSharedPointer< QtPulseAudioCard > card(
+            d->cards.value(
+                d->cardsByIndex.value(idx, NULL),
+                QSharedPointer< QtPulseAudioCard >()));
+
+        if (card.isNull())
+        {
+            d->cardsByIndex.remove(card->index());
+            d->cardsByName.remove(card->name());
+            d->cards.remove(card.data());
+
+            emit d->q->cardRemoved(card);
+        }
+    }
+}
+
+void QtPulseAudioConnectionPrivate::processSinkEvent(
+        int event, uint32_t idx, QtPulseAudioConnectionPrivate *d)
+{
+    if (event == PA_SUBSCRIPTION_EVENT_NEW)
+    {
+        pa_operation_unref(
+            pa_context_get_sink_info_by_index(
+                d->context, idx, &QtPulseAudioConnectionPrivate::onSinkInfo, d));
+    }
+    else if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
+    {
+        QtPulseAudioSink* sink = d->sinksByIndex.value(idx, NULL);
+
+        if (sink)
+            sink->update();
+    }
+    else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
+    {
+        QSharedPointer< QtPulseAudioSink > sink(
+            d->sinks.value(
+                d->sinksByIndex.value(idx, NULL),
+                QSharedPointer< QtPulseAudioSink >()));
+
+        if (!sink.isNull())
+        {
+            d->sinksByIndex.remove(sink->index());
+            d->sinksByName.remove(sink->name());
+            d->sinks.remove(sink.data());
+
+            emit d->q->sinkRemoved(sink);
+        }
+    }
+}
+
+void QtPulseAudioConnectionPrivate::processSourceEvent(
+        int event, uint32_t idx, QtPulseAudioConnectionPrivate *d)
+{
+    if (event == PA_SUBSCRIPTION_EVENT_NEW)
+    {
+        pa_operation_unref(
+            pa_context_get_source_info_by_index(
+                d->context, idx, &QtPulseAudioConnectionPrivate::onSourceInfo, d));
+    }
+    else if (event == PA_SUBSCRIPTION_EVENT_CHANGE)
+    {
+        QtPulseAudioSource* source = d->sourcesByIndex.value(idx, NULL);
+
+        if (source)
+            source->update();
+    }
+    else if (event == PA_SUBSCRIPTION_EVENT_REMOVE)
+    {
+        QSharedPointer< QtPulseAudioSource > source(
+            d->sources.value(
+                d->sourcesByIndex.value(idx, NULL),
+                QSharedPointer< QtPulseAudioSource >()));
+
+        if (source.isNull())
+        {
+            d->sourcesByIndex.remove(source->index());
+            d->sourcesByName.remove(source->name());
+            d->sources.remove(source.data());
+
+            emit d->q->sourceRemoved(source);
+        }
     }
 }

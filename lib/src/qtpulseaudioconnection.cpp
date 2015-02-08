@@ -145,6 +145,20 @@ QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByName(const QStr
                 QSharedPointer< QtPulseAudioSink >());
 }
 
+QSharedPointer< QtPulseAudioSource > QtPulseAudioConnection::sourceByIndex(quint32 index) const
+{
+    return d->sources.value(
+                d->sourcesByIndex.value(index, NULL),
+                QSharedPointer< QtPulseAudioSource >());
+}
+
+QSharedPointer< QtPulseAudioSource > QtPulseAudioConnection::sourceByName(const QString &name) const
+{
+    return d->sources.value(
+                d->sourcesByName.value(name, NULL),
+                QSharedPointer< QtPulseAudioSource >());
+}
+
 QtPulseAudio::ConnectionState QtPulseAudioConnection::state() const
 {
     return d->state;
