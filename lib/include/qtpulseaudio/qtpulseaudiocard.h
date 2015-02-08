@@ -44,8 +44,8 @@ public:
 //    void setActiveProfile(const QString& activeProfile);
 
 //    QString driver() const;
-    quint32 index() const;
-    QString name() const;
+    quint32 index();
+    QString name();
 //    quint32 ownerModule() const;
 
 //    void update(const pa_card_info* paCardInfo);

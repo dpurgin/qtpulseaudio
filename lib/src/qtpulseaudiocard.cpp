@@ -112,18 +112,18 @@ QSharedPointer< QtPulseAudioFacility > QtPulseAudioCard::create(
 //    return d->driver;
 //}
 
-quint32 QtPulseAudioCard::index() const
+quint32 QtPulseAudioCard::index()
 {
-    const Q_D(QtPulseAudioCard);
+    Q_D(QtPulseAudioCard);
 
     QReadLocker locker(&d->lock);
 
     return d->index;
 }
 
-QString QtPulseAudioCard::name() const
+QString QtPulseAudioCard::name()
 {
-    const Q_D(QtPulseAudioCard);
+    Q_D(QtPulseAudioCard);
 
     QReadLocker locker(&d->lock);
 
