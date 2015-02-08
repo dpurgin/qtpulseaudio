@@ -19,6 +19,8 @@
 #ifndef QTPULSEAUDIOFACILITYPRIVATE_H
 #define QTPULSEAUDIOFACILITYPRIVATE_H
 
+#include <QReadWriteLock>
+
 #include <pulse/context.h>
 
 #include "qtpulseaudiodata.h"
@@ -43,6 +45,8 @@ protected:
     pa_context* context;
 
     QtPulseAudioFacility* q_ptr;
+
+    QReadWriteLock lock;
 };
 
 #endif // QTPULSEAUDIOFACILITYPRIVATE_H
