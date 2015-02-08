@@ -61,6 +61,8 @@ QtPulseAudioConnection::~QtPulseAudioConnection()
 
 QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByIndex(quint32 index) const
 {
+    QReadLocker locker(&d->lock);
+
     return d->cards.value(
                 d->cardsByIndex.value(index, NULL),
                 QSharedPointer< QtPulseAudioCard >());
@@ -68,6 +70,8 @@ QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByIndex(quint32 i
 
 QSharedPointer< QtPulseAudioCard > QtPulseAudioConnection::cardByName(const QString& name) const
 {
+    QReadLocker locker(&d->lock);
+
     return d->cards.value(
                 d->cardsByName.value(name, NULL),
                 QSharedPointer< QtPulseAudioCard >());
@@ -133,6 +137,8 @@ QtPulseAudioStream* QtPulseAudioConnection::createStream(QtPulseAudio::StreamTyp
 
 QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByIndex(quint32 index) const
 {
+    QReadLocker locker(&d->lock);
+
     return d->sinks.value(
                 d->sinksByIndex.value(index, NULL),
                 QSharedPointer< QtPulseAudioSink >());
@@ -140,6 +146,8 @@ QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByIndex(quint32 i
 
 QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByName(const QString& name) const
 {
+    QReadLocker locker(&d->lock);
+
     return d->sinks.value(
                 d->sinksByName.value(name, NULL),
                 QSharedPointer< QtPulseAudioSink >());
@@ -147,6 +155,8 @@ QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByName(const QStr
 
 QSharedPointer< QtPulseAudioSource > QtPulseAudioConnection::sourceByIndex(quint32 index) const
 {
+    QReadLocker locker(&d->lock);
+
     return d->sources.value(
                 d->sourcesByIndex.value(index, NULL),
                 QSharedPointer< QtPulseAudioSource >());
@@ -154,6 +164,8 @@ QSharedPointer< QtPulseAudioSource > QtPulseAudioConnection::sourceByIndex(quint
 
 QSharedPointer< QtPulseAudioSource > QtPulseAudioConnection::sourceByName(const QString &name) const
 {
+    QReadLocker locker(&d->lock);
+
     return d->sources.value(
                 d->sourcesByName.value(name, NULL),
                 QSharedPointer< QtPulseAudioSource >());
@@ -161,5 +173,7 @@ QSharedPointer< QtPulseAudioSource > QtPulseAudioConnection::sourceByName(const 
 
 QtPulseAudio::ConnectionState QtPulseAudioConnection::state() const
 {
+    QReadLocker locker(&d->lock);
+
     return d->state;
 }

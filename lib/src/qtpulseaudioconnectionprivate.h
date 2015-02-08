@@ -21,6 +21,8 @@
 
 #include <qtpulseaudio/qtpulseaudioconnection.h>
 
+#include <QReadWriteLock>
+
 #include <pulse/introspect.h>
 #include <pulse/thread-mainloop.h>
 
@@ -116,6 +118,8 @@ private:
 
     QtPulseAudio::ConnectionState state;
     QString server;
+
+    QReadWriteLock lock;
 
     QHash< QtPulseAudioCard*, QSharedPointer< QtPulseAudioCard > > cards;
     QHash< quint32, QtPulseAudioCard* > cardsByIndex;

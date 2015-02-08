@@ -18,6 +18,9 @@
 
 #include "qtpulseaudioconnectionprivate.h"
 
+#include <QReadLocker>
+#include <QWriteLocker>
+
 #include <qtpulseaudio/qtpulseaudiocard.h>
 #include <qtpulseaudio/qtpulseaudiosink.h>
 #include <qtpulseaudio/qtpulseaudiosource.h>
@@ -39,6 +42,8 @@ void QtPulseAudioConnectionPrivate::onCardInfo(
     Q_UNUSED(context)
 
     QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    QWriteLocker locker(&d->lock);
 
     if (!eol)
     {
@@ -70,6 +75,8 @@ void QtPulseAudioConnectionPrivate::onContextStateChange(
 
     QtPulseAudioConnectionPrivate* const d =
             reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    QWriteLocker locker(&d->lock);
 
     pa_context_state state = pa_context_get_state(context);
 
@@ -165,6 +172,8 @@ void QtPulseAudioConnectionPrivate::onContextSubscription(
 
     QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
 
+    QWriteLocker locker(&d->lock);
+
     if (success)
         d->subscribed = true;
     else
@@ -179,6 +188,8 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
     Q_UNUSED(context);
 
     QtPulseAudioConnectionPrivate* d = reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    QWriteLocker locker(&d->lock);
 
     int facility = eventData & PA_SUBSCRIPTION_EVENT_FACILITY_MASK;
     int event = eventData & PA_SUBSCRIPTION_EVENT_TYPE_MASK;
@@ -210,6 +221,8 @@ void QtPulseAudioConnectionPrivate::onSinkInfo(
     QtPulseAudioConnectionPrivate* const d =
             reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
 
+    QWriteLocker locker(&d->lock);
+
     if (!eol)
     {
         QSharedPointer< QtPulseAudioSink > sink(
@@ -240,6 +253,8 @@ void QtPulseAudioConnectionPrivate::onSourceInfo(
 
     QtPulseAudioConnectionPrivate* const d =
             reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    QWriteLocker locker(&d->lock);
 
     if (!eol)
     {
