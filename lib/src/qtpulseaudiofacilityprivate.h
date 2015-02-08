@@ -41,6 +41,13 @@ protected:
     {
     }
 
+    static void trivialCallback(pa_context* context, int success, void* userData)
+    {
+        Q_UNUSED(context)
+        Q_UNUSED(success)
+        Q_UNUSED(userData)
+    }
+
 protected:
     pa_context* context;
 
