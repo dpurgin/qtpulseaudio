@@ -18,6 +18,8 @@
 
 #include "qtpulseaudiocardprivate.h"
 
+#include <QWriteLocker>
+
 #include <qtpulseaudio/qtpulseaudiocardprofile.h>
 
 #include <pulse/version.h>
@@ -59,6 +61,8 @@ void QtPulseAudioCardPrivate::onCardInfo(
     if (!eol)
     {
         QtPulseAudioCardPrivate* d = reinterpret_cast< QtPulseAudioCardPrivate* >(userData);
+
+        QWriteLocker locker(&d->lock);
 
 #if PA_CHECK_VERSION(5, 0, 0)
         if (cardInfo->active_profile2 && d->activeProfile &&

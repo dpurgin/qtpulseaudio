@@ -23,6 +23,8 @@
 //#include "pulseaudiocardprofile.h"
 
 #include <QDebug>
+#include <QReadLocker>
+#include <QWriteLocker>
 //#include <QHash>
 //#include <QSet>
 //#include <QThread>
@@ -114,12 +116,16 @@ quint32 QtPulseAudioCard::index() const
 {
     const Q_D(QtPulseAudioCard);
 
+    QReadLocker locker(&d->lock);
+
     return d->index;
 }
 
 QString QtPulseAudioCard::name() const
 {
     const Q_D(QtPulseAudioCard);
+
+    QReadLocker locker(&d->lock);
 
     return d->name;
 }
