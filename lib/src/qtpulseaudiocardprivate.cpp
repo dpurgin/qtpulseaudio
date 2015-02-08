@@ -80,6 +80,9 @@ void QtPulseAudioCardPrivate::onCardInfo(
         {
             d->activeProfile = d->profilesByName.value(
                                    QString::fromUtf8(cardInfo->active_profile->name));
+
+            emit d->q_func()->activeProfileChanged(
+                        d->activeProfile? d->activeProfile->name(): QString());
         }
 #endif
     }
