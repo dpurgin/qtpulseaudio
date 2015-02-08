@@ -26,6 +26,8 @@ QtPulseAudioSourcePrivate::QtPulseAudioSourcePrivate(const QtPulseAudioData& pul
 
     index = sourceInfo->index;
     name = QString::fromUtf8(sourceInfo->name);
+    description = QString::fromUtf8(sourceInfo->description);
+    driver = QString::fromUtf8(sourceInfo->driver);
 }
 
 QtPulseAudioSourcePrivate::~QtPulseAudioSourcePrivate()

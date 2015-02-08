@@ -39,6 +39,8 @@ public:
 
     quint32 index();
     QString name();
+    QString description();
+    QString driver();
 
 signals:
 

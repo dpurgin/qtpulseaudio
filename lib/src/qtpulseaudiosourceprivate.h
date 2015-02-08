@@ -45,6 +45,8 @@ private:
 private:
     quint32 index;
     QString name;
+    QString description;
+    QString driver;
 };
 
 #endif // QTPULSEAUDIOSOURCEPRIVATE_H

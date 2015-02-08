@@ -49,6 +49,24 @@ QSharedPointer< QtPulseAudioFacility > QtPulseAudioSource::create(const QtPulseA
                                                 &QtPulseAudioFacility::deleterMethod);
 }
 
+QString QtPulseAudioSource::description()
+{
+    Q_D(QtPulseAudioSource);
+
+    QReadLocker locker(&d->lock);
+
+    return d->description;
+}
+
+QString QtPulseAudioSource::driver()
+{
+    Q_D(QtPulseAudioSource);
+
+    QReadLocker locker(&d->lock);
+
+    return d->driver;
+}
+
 quint32 QtPulseAudioSource::index()
 {
     Q_D(QtPulseAudioSource);
