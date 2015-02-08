@@ -27,6 +27,7 @@
 #include <pulse/thread-mainloop.h>
 
 class QtPulseAudioCard;
+class QtPulseAudioServer;
 class QtPulseAudioSink;
 class QtPulseAudioSource;
 
@@ -45,6 +46,9 @@ private:
     static void onContextSubscriptionEvent(
         pa_context* context, pa_subscription_event_type_t eventType, uint32_t idx, void* userData);
 
+    static void onServerInfo(
+        pa_context* context, const pa_server_info* serverInfo, void* userData);
+
     static void onSinkInfo(
         pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData);
 
@@ -52,6 +56,7 @@ private:
         pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData);
 
     static void processCardEvent(int event, uint32_t idx, QtPulseAudioConnectionPrivate* d);
+    static void processServerEvent(int event, QtPulseAudioConnectionPrivate* d);
     static void processSinkEvent(int event, uint32_t idx, QtPulseAudioConnectionPrivate* d);
     static void processSourceEvent(int event, uint32_t idx, QtPulseAudioConnectionPrivate* d);
 
@@ -117,13 +122,14 @@ private:
     bool subscribed;
 
     QtPulseAudio::ConnectionState state;
-    QString server;
 
     QReadWriteLock lock;
 
     QHash< QtPulseAudioCard*, QSharedPointer< QtPulseAudioCard > > cards;
     QHash< quint32, QtPulseAudioCard* > cardsByIndex;
     QHash< QString, QtPulseAudioCard* > cardsByName;
+
+    QSharedPointer< QtPulseAudioServer > server;
 
     QHash< QtPulseAudioSink*, QSharedPointer< QtPulseAudioSink > > sinks;
     QHash< quint32, QtPulseAudioSink* > sinksByIndex;

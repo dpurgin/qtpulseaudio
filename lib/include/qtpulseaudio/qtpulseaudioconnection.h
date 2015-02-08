@@ -27,6 +27,7 @@
 
 class QtPulseAudioCard;
 class QtPulseAudioConnectionPrivate;
+class QtPulseAudioServer;
 class QtPulseAudioSink;
 class QtPulseAudioSource;
 class QtPulseAudioStream;
@@ -47,6 +48,8 @@ public:
     QSharedPointer< QtPulseAudioCard > cardByName(const QString& name) const;
 
     bool connectToServer(const QString& server = QString());
+
+    QSharedPointer< QtPulseAudioServer > server() const;
 
     QSharedPointer< QtPulseAudioSink > sinkByIndex(quint32 index) const;
     QSharedPointer< QtPulseAudioSink > sinkByName(const QString& name) const;

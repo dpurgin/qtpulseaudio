@@ -22,6 +22,7 @@
 #include <QWriteLocker>
 
 #include <qtpulseaudio/qtpulseaudiocard.h>
+#include <qtpulseaudio/qtpulseaudioserver.h>
 #include <qtpulseaudio/qtpulseaudiosink.h>
 #include <qtpulseaudio/qtpulseaudiosource.h>
 
@@ -106,6 +107,19 @@ void QtPulseAudioConnectionPrivate::onContextStateChange(
                     pa_context_get_card_info_list(
                         d->context,
                         &QtPulseAudioConnectionPrivate::onCardInfo,
+                        d));
+            }
+
+            if (d->facilities.testFlag(QtPulseAudio::Server) ||
+                    d->facilities.testFlag(QtPulseAudio::AllFacilities))
+            {
+                d->wantFacilities |= QtPulseAudio::Server;
+                subscriptionMask |= PA_SUBSCRIPTION_MASK_SERVER;
+
+                pa_operation_unref(
+                    pa_context_get_server_info(
+                        d->context,
+                        &QtPulseAudioConnectionPrivate::onServerInfo,
                         d));
             }
 
@@ -199,6 +213,11 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
     {
         processCardEvent(event, idx, d);
     }
+    else if (facility == PA_SUBSCRIPTION_EVENT_SERVER &&
+             d->facilities.testFlag(QtPulseAudio::Server))
+    {
+        processServerEvent(event, d);
+    }
     else if (facility == PA_SUBSCRIPTION_EVENT_SINK &&
              d->facilities.testFlag(QtPulseAudio::Sink))
     {
@@ -213,8 +232,31 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
     qDebug() << "EventType: " << event << ", idx: " << idx;
 }
 
+void QtPulseAudioConnectionPrivate::onServerInfo(
+        pa_context* context, const pa_server_info* serverInfo, void* userData)
+{
+    Q_UNUSED(context)
+
+    QtPulseAudioConnectionPrivate* const d =
+            reinterpret_cast< QtPulseAudioConnectionPrivate* >(userData);
+
+    QWriteLocker locker(&d->lock);
+
+    d->server =
+        qtpaFacilityFactory->create(
+            QtPulseAudio::Server,
+            QtPulseAudioData(d->context, serverInfo)
+        ).dynamicCast< QtPulseAudioServer >();
+
+    if (d->state != QtPulseAudio::Connected)
+    {
+        d->queriedFacilities |= QtPulseAudio::Server;
+        d->checkInitialized();
+    }
+}
+
 void QtPulseAudioConnectionPrivate::onSinkInfo(
-        pa_context *context, const pa_sink_info *sinkInfo, int eol, void *userData)
+        pa_context* context, const pa_sink_info* sinkInfo, int eol, void* userData)
 {
     Q_UNUSED(context)
 
@@ -311,6 +353,13 @@ void QtPulseAudioConnectionPrivate::processCardEvent(
             emit d->q->cardRemoved(card);
         }
     }
+}
+
+void QtPulseAudioConnectionPrivate::processServerEvent(
+        int event, QtPulseAudioConnectionPrivate *d)
+{
+    if (event == PA_SUBSCRIPTION_EVENT_CHANGE && !d->server.isNull())
+        d->server->update();
 }
 
 void QtPulseAudioConnectionPrivate::processSinkEvent(
