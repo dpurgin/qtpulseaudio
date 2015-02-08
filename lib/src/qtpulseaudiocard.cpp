@@ -34,9 +34,11 @@
 #include <pulse/introspect.h>
 //#include <pulse/version.h>
 
-#include "qtpulseaudiofacilityfactory.h"
+#include <qtpulseaudio/qtpulseaudiocardprofile.h>
 
 #include "qtpulseaudiocardprivate.h"
+#include "qtpulseaudiofacilityfactory.h"
+
 
 void registerCardFacility()
 {
@@ -100,7 +102,7 @@ QSharedPointer< QtPulseAudioFacility > QtPulseAudioCard::create(
 //    qDeleteAll(d->profiles);
 //}
 
-QtPulseAudioCardProfile* QtPulseAudioCard::activeProfile() const
+QtPulseAudioCardProfile* QtPulseAudioCard::activeProfile()
 {
     Q_D(QtPulseAudioCard);
 
@@ -199,7 +201,7 @@ void QtPulseAudioCard::setActiveProfile(const QString& profileName)
 {
     Q_D(QtPulseAudioCard);
 
-    QReadLocker locker(d->lock);
+    QReadLocker locker(&d->lock);
 
     if (d->activeProfile && profileName == d->activeProfile->name())
         return;

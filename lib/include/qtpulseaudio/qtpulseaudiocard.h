@@ -40,7 +40,7 @@ class QtPulseAudioCard : public QtPulseAudioFacility
 public:
     void update();
 
-    QtPulseAudioCardProfile* activeProfile() const;
+    QtPulseAudioCardProfile* activeProfile();
     void setActiveProfile(const QString& activeProfile);
 
 //    QString driver() const;
