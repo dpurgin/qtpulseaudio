@@ -58,8 +58,6 @@ QtPulseAudioCard::~QtPulseAudioCard()
     Q_D(QtPulseAudioCard);
 
     qDebug() << "Destroying card:" << d->index << d->name;
-
-    delete d;
 }
 
 QSharedPointer< QtPulseAudioFacility > QtPulseAudioCard::create(
@@ -102,10 +100,14 @@ QSharedPointer< QtPulseAudioFacility > QtPulseAudioCard::create(
 //    qDeleteAll(d->profiles);
 //}
 
-//PulseAudioCardProfile* PulseAudioCard::activeProfile() const
-//{
-//    return d->activeProfile;
-//}
+QtPulseAudioCardProfile* QtPulseAudioCard::activeProfile() const
+{
+    Q_D(QtPulseAudioCard);
+
+    QReadLocker locker(&d->lock);
+
+    return d->activeProfile;
+}
 
 //QString PulseAudioCard::driver() const
 //{
@@ -193,14 +195,20 @@ void QtPulseAudioCard::update()
 
 //}
 
-//void PulseAudioCard::setActiveProfile(const QString& profileName)
-//{
-//    if (d->activeProfile && profileName == d->activeProfile->name())
-//        return;
+void QtPulseAudioCard::setActiveProfile(const QString& profileName)
+{
+    Q_D(QtPulseAudioCard);
 
-//    pa_operation_unref(pa_context_set_card_profile_by_index(d->context,
-//                                                            index(),
-//                                                            profileName.toUtf8().data(),
-//                                                            &PulseAudioCardPrivate::trivialCallback,
-//                                                            NULL));
-//}
+    QReadLocker locker(d->lock);
+
+    if (d->activeProfile && profileName == d->activeProfile->name())
+        return;
+
+    pa_operation_unref(
+        pa_context_set_card_profile_by_index(
+            d->context,
+            index(),
+            profileName.toUtf8().data(),
+            &QtPulseAudioFacilityPrivate::trivialCallback,
+            NULL));
+}

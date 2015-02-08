@@ -41,7 +41,7 @@ public:
     void update();
 
     QtPulseAudioCardProfile* activeProfile() const;
-//    void setActiveProfile(const QString& activeProfile);
+    void setActiveProfile(const QString& activeProfile);
 
 //    QString driver() const;
     quint32 index();
