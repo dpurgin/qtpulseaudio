@@ -20,6 +20,7 @@
 #include <qtpulseaudio/qtpulseaudiosource.h>
 
 #include <QDebug>
+#include <QReadLocker>
 
 #include "qtpulseaudiofacilityfactory.h"
 
@@ -48,16 +49,20 @@ QSharedPointer< QtPulseAudioFacility > QtPulseAudioSource::create(const QtPulseA
                                                 &QtPulseAudioFacility::deleterMethod);
 }
 
-quint32 QtPulseAudioSource::index() const
+quint32 QtPulseAudioSource::index()
 {
-    const Q_D(QtPulseAudioSource);
+    Q_D(QtPulseAudioSource);
+
+    QReadLocker locker(&d->lock);
 
     return d->index;
 }
 
-QString QtPulseAudioSource::name() const
+QString QtPulseAudioSource::name()
 {
-    const Q_D(QtPulseAudioSource);
+    Q_D(QtPulseAudioSource);
+
+    QReadLocker locker(&d->lock);
 
     return d->name;
 }

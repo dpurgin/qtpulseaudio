@@ -37,8 +37,8 @@ class QTPULSEAUDIO_DECL QtPulseAudioSource : public QtPulseAudioFacility
 public:
     void update();
 
-    quint32 index() const;
-    QString name() const;
+    quint32 index();
+    QString name();
 
 signals:
 
