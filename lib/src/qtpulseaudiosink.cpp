@@ -121,10 +121,14 @@ void QtPulseAudioSink::update()
 //    delete d;
 //}
 
-//PulseAudioSinkPort* PulseAudioSink::activePort() const
-//{
-//    return d->activePort;
-//}
+QtPulseAudioSinkPort* QtPulseAudioSink::activePort()
+{
+    Q_D(QtPulseAudioSink);
+
+    QReadLocker locker(&d->lock);
+
+    return d->activePort;
+}
 
 quint32 QtPulseAudioSink::index()
 {
@@ -144,19 +148,23 @@ QString QtPulseAudioSink::name()
     return d->name;
 }
 
-//void PulseAudioSink::setActivePort(const QString& port)
-//{
-//    qDebug() << QThread::currentThread();
+void QtPulseAudioSink::setActivePort(const QString& port)
+{
+    Q_D(QtPulseAudioSink);
 
-//    if (d->activePort && d->activePort->name() != port)
-//    {
-//        pa_operation_unref(pa_context_set_sink_port_by_index(d->context,
-//                                                             d->index,
-//                                                             port.toUtf8().data(),
-//                                                             &PulseAudioSinkPrivate::trivialCallback,
-//                                                             NULL));
-//    }
-//}
+    QReadLocker locker(&d->lock);
+
+    if (d->activePort && d->activePort->name() != port)
+    {
+        pa_operation_unref(
+            pa_context_set_sink_port_by_index(
+                d->context,
+                d->index,
+                port.toUtf8().data(),
+                &QtPulseAudioFacilityPrivate::trivialCallback,
+                d));
+    }
+}
 
 //void PulseAudioSink::update(const pa_sink_info* sinkInfo)
 //{

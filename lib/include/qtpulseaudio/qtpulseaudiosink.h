@@ -24,8 +24,7 @@
 
 #include <qtpulseaudio/qtpulseaudiofacility.h>
 
-//class PulseAudioSinkPort;
-
+class QtPulseAudioSinkPort;
 class QtPulseAudioSinkPrivate;
 
 class QtPulseAudioSink : public QtPulseAudioFacility
@@ -41,8 +40,8 @@ class QtPulseAudioSink : public QtPulseAudioFacility
 public:
     void update();
 
-//    PulseAudioSinkPort* activePort() const;
-//    void setActivePort(const QString& port);
+    QtPulseAudioSinkPort* activePort();
+    void setActivePort(const QString& port);
 
     quint32 index();
     QString name();
