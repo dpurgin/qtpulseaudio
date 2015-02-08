@@ -42,12 +42,14 @@ SOURCES += \
     src/qtpulseaudiofacility.cpp \
     src/qtpulseaudiofacilityfactory.cpp \
     src/qtpulseaudiofacilityprivate.cpp \
+    src/qtpulseaudioserver.cpp \
+    src/qtpulseaudioserverprivate.cpp \
     src/qtpulseaudiosink.cpp \
     src/qtpulseaudiosinkport.cpp \
     src/qtpulseaudiosinkprivate.cpp \
     src/qtpulseaudiosource.cpp \
-    src/qtpulseaudiostream.cpp \
-    src/qtpulseaudiosourceprivate.cpp
+    src/qtpulseaudiosourceprivate.cpp \
+    src/qtpulseaudiostream.cpp
 
 HEADERS += \
     src/qtpulseaudiodata.h \
@@ -57,14 +59,16 @@ HEADERS += \
     include/qtpulseaudio/qtpulseaudioconfig.h \
     include/qtpulseaudio/qtpulseaudioconnection.h \
     include/qtpulseaudio/qtpulseaudiofacility.h \
+    include/qtpulseaudio/qtpulseaudioserver.h \
     include/qtpulseaudio/qtpulseaudiosink.h \
     include/qtpulseaudio/qtpulseaudiosinkport.h \
     include/qtpulseaudio/qtpulseaudiosource.h \
     include/qtpulseaudio/qtpulseaudiostream.h \
+    src/qtpulseaudiocardprivate.h \
     src/qtpulseaudioconnectionprivate.h \
     src/qtpulseaudiofacilityfactory.h \
-    src/qtpulseaudiosinkprivate.h \
-    src/qtpulseaudiocardprivate.h \
     src/qtpulseaudiofacilityprivate.h \
-    src/qtpulseaudiosourceprivate.h
+    src/qtpulseaudioserverprivate.h \
+    src/qtpulseaudiosinkprivate.h \
+    src/qtpulseaudiosourceprivate.h \
 
