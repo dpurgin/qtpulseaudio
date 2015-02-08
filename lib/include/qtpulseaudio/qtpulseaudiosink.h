@@ -44,8 +44,8 @@ public:
 //    PulseAudioSinkPort* activePort() const;
 //    void setActivePort(const QString& port);
 
-    quint32 index() const;
-    QString name() const;
+    quint32 index();
+    QString name();
 
 //    void update(const pa_sink_info* sinkInfo);
 

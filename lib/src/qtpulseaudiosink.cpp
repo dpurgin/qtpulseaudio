@@ -21,6 +21,7 @@
 #include <pulse/introspect.h>
 
 #include <QDebug>
+#include <QReadLocker>
 
 #include "qtpulseaudiofacilityfactory.h"
 
@@ -125,16 +126,20 @@ void QtPulseAudioSink::update()
 //    return d->activePort;
 //}
 
-quint32 QtPulseAudioSink::index() const
+quint32 QtPulseAudioSink::index()
 {
-    const Q_D(QtPulseAudioSink);
+    Q_D(QtPulseAudioSink);
+
+    QReadLocker locker(&d->lock);
 
     return d->index;
 }
 
-QString QtPulseAudioSink::name() const
+QString QtPulseAudioSink::name()
 {
-    const Q_D(QtPulseAudioSink);
+    Q_D(QtPulseAudioSink);
+
+    QReadLocker locker(&d->lock);
 
     return d->name;
 }

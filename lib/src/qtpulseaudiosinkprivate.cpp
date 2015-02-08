@@ -18,6 +18,8 @@
 
 #include "qtpulseaudiosinkprivate.h"
 
+#include <QWriteLocker>
+
 QtPulseAudioSinkPrivate::QtPulseAudioSinkPrivate(const QtPulseAudioData& pulseAudioData)
     : QtPulseAudioFacilityPrivate(pulseAudioData),
       activePort(NULL)
@@ -55,6 +57,8 @@ void QtPulseAudioSinkPrivate::onSinkInfo(
     {
         QtPulseAudioSinkPrivate* const d =
                 reinterpret_cast< QtPulseAudioSinkPrivate* const >(userData);
+
+        QWriteLocker locker(&d->lock);
 
         if (sinkInfo->active_port && d->activePort &&
                 d->activePort->name() != QString::fromUtf8(sinkInfo->active_port->name))
