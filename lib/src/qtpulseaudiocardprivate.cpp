@@ -23,6 +23,7 @@
 #include <qtpulseaudio/qtpulseaudiocardprofile.h>
 
 #include <pulse/version.h>
+#include <pulse/introspect.h>
 
 QtPulseAudioCardPrivate::QtPulseAudioCardPrivate(const QtPulseAudioData& pulseAudioData)
     : QtPulseAudioFacilityPrivate(pulseAudioData)
@@ -45,6 +46,12 @@ QtPulseAudioCardPrivate::QtPulseAudioCardPrivate(const QtPulseAudioData& pulseAu
         profiles.insert(profile);
         profilesByName.insert(profile->name(), profile);
     }
+
+#if PA_CHECK_VERSION(5, 0, 0)
+    activeProfile = profilesByName.value(QString::fromUtf8(cardInfo->active_profile2->name), NULL);
+#else
+    activeProfile = profilesByName.value(QString::fromUtf8(cardInfo->active_profile->name), NULL);
+#endif
 }
 
 QtPulseAudioCardPrivate::~QtPulseAudioCardPrivate()
@@ -56,6 +63,8 @@ QtPulseAudioCardPrivate::~QtPulseAudioCardPrivate()
 void QtPulseAudioCardPrivate::onCardInfo(
         pa_context *context, const pa_card_info *cardInfo, int eol, void *userData)
 {
+    qDebug();
+
     Q_UNUSED(context);
 
     if (!eol)

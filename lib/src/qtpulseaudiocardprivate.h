@@ -23,13 +23,12 @@
 #include <QSet>
 #include <QString>
 
-#include <pulse/introspect.h>
-
 #include <qtpulseaudio/qtpulseaudiocard.h>
 
 #include "qtpulseaudiofacilityprivate.h"
 
 class QtPulseAudioCardProfile;
+struct pa_card_info;
 
 class QtPulseAudioCardPrivate : public QtPulseAudioFacilityPrivate
 {
