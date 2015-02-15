@@ -205,8 +205,10 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
 
     QWriteLocker locker(&d->lock);
 
-    int facility = eventData & PA_SUBSCRIPTION_EVENT_FACILITY_MASK;
-    int event = eventData & PA_SUBSCRIPTION_EVENT_TYPE_MASK;
+    int facility = (eventData & PA_SUBSCRIPTION_EVENT_FACILITY_MASK);
+    int event = (eventData & PA_SUBSCRIPTION_EVENT_TYPE_MASK);
+
+    qDebug() << "EventType: " << event << ", idx: " << idx;
 
     if (facility == PA_SUBSCRIPTION_EVENT_CARD &&
             d->facilities.testFlag(QtPulseAudio::Card))
@@ -228,8 +230,6 @@ void QtPulseAudioConnectionPrivate::onContextSubscriptionEvent(
     {
         processSourceEvent(event, idx, d);
     }
-
-    qDebug() << "EventType: " << event << ", idx: " << idx;
 }
 
 void QtPulseAudioConnectionPrivate::onServerInfo(
@@ -324,6 +324,8 @@ void QtPulseAudioConnectionPrivate::onSourceInfo(
 void QtPulseAudioConnectionPrivate::processCardEvent(
         int event, uint32_t idx, QtPulseAudioConnectionPrivate *d)
 {
+    qDebug();
+
     if (event == PA_SUBSCRIPTION_EVENT_NEW)
     {
         pa_operation_unref(
@@ -358,6 +360,8 @@ void QtPulseAudioConnectionPrivate::processCardEvent(
 void QtPulseAudioConnectionPrivate::processServerEvent(
         int event, QtPulseAudioConnectionPrivate *d)
 {
+    qDebug();
+
     if (event == PA_SUBSCRIPTION_EVENT_CHANGE && !d->server.isNull())
         d->server->update();
 }
@@ -365,6 +369,8 @@ void QtPulseAudioConnectionPrivate::processServerEvent(
 void QtPulseAudioConnectionPrivate::processSinkEvent(
         int event, uint32_t idx, QtPulseAudioConnectionPrivate *d)
 {
+    qDebug();
+
     if (event == PA_SUBSCRIPTION_EVENT_NEW)
     {
         pa_operation_unref(
@@ -399,6 +405,8 @@ void QtPulseAudioConnectionPrivate::processSinkEvent(
 void QtPulseAudioConnectionPrivate::processSourceEvent(
         int event, uint32_t idx, QtPulseAudioConnectionPrivate *d)
 {
+    qDebug();
+
     if (event == PA_SUBSCRIPTION_EVENT_NEW)
     {
         pa_operation_unref(
