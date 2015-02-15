@@ -135,6 +135,13 @@ QtPulseAudioStream* QtPulseAudioConnection::createStream(QtPulseAudio::StreamTyp
     return NULL;
 }
 
+QSharedPointer< QtPulseAudioServer > QtPulseAudioConnection::server() const
+{
+    QReadLocker locker(&d->lock);
+
+    return d->server;
+}
+
 QSharedPointer< QtPulseAudioSink > QtPulseAudioConnection::sinkByIndex(quint32 index) const
 {
     QReadLocker locker(&d->lock);
