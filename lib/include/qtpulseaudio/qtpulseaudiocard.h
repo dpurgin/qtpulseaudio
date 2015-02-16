@@ -38,6 +38,8 @@ class QtPulseAudioCard : public QtPulseAudioFacility
     static QSharedPointer< QtPulseAudioFacility > create(const QtPulseAudioData& pulseAudioData);
 
 public:
+    virtual ~QtPulseAudioCard();
+
     void update();
 
     QtPulseAudioCardProfile* activeProfile();
@@ -62,7 +64,6 @@ public slots:
 
 private:
     explicit QtPulseAudioCard(const QtPulseAudioData& pulseAudioData);
-    virtual ~QtPulseAudioCard();
 
 private:
     Q_DECLARE_PRIVATE(QtPulseAudioCard)
