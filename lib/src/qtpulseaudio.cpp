@@ -62,12 +62,17 @@ namespace {
     {
         qRegisterMetaType< QtPulseAudio::ConnectionState >();
         qRegisterMetaType< QtPulseAudio::PortAvailability >();
-        qRegisterMetaType< QtPulseAudio::StreamType >();
-
-        qInstallMessageHandler(qtpaMessageHandler);
+        qRegisterMetaType< QtPulseAudio::StreamType >();       
     }
 
     Q_CONSTRUCTOR_FUNCTION(initialize)
+}
+
+namespace QtPulseAudio {
+    void installMessageHandler()
+    {
+        qInstallMessageHandler(qtpaMessageHandler);
+    }
 }
 
 QDebug operator<<(QDebug dbg, QtPulseAudio::ConnectionState state)

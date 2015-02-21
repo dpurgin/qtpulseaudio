@@ -66,6 +66,8 @@ namespace QtPulseAudio
         Playback,
         Record
     };
+
+    void installMessageHandler();
 }
 
 Q_DECLARE_METATYPE(QtPulseAudio::ConnectionState)
