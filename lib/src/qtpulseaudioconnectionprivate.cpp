@@ -29,6 +29,19 @@
 #include "qtpulseaudiodata.h"
 #include "qtpulseaudiofacilityfactory.h"
 
+namespace
+{
+    void initialize()
+    {
+        // types used in signals and slots
+        qRegisterMetaType< QSharedPointer< QtPulseAudioCard > >();
+        qRegisterMetaType< QSharedPointer< QtPulseAudioSource > >();
+        qRegisterMetaType< QSharedPointer< QtPulseAudioSink > >();
+    }
+
+    Q_CONSTRUCTOR_FUNCTION(initialize)
+}
+
 QtPulseAudioConnectionPrivate::~QtPulseAudioConnectionPrivate()
 {
     cardsByIndex.clear();
