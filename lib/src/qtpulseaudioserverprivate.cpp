@@ -22,11 +22,26 @@
 
 #include <pulse/introspect.h>
 
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+#include <QDebug>
+#endif // QTPULSEAUDIOSERVER_DEBUG
+
 QtPulseAudioServerPrivate::QtPulseAudioServerPrivate(const QtPulseAudioData& pulseAudioData)
     : QtPulseAudioFacilityPrivate(pulseAudioData)
 {
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug();
+#endif // QTPULSEAUDIOSERVER_DEBUG
+
     const pa_server_info* serverInfo =
             reinterpret_cast< const pa_server_info* >(pulseAudioData.data);
+
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug() << "serverInfo->default_sink_name = "
+             << QString::fromUtf8(serverInfo->default_sink_name);
+    qDebug() << "serverInfo->default_source_name = "
+             << QString::fromUtf8(serverInfo->default_source_name);
+#endif // QTPULSEAUDIOSERVER_DEBUG
 
     userName = QString::fromUtf8(serverInfo->user_name);
     hostName = QString::fromUtf8(serverInfo->host_name);
@@ -39,16 +54,34 @@ QtPulseAudioServerPrivate::QtPulseAudioServerPrivate(const QtPulseAudioData& pul
 
 QtPulseAudioServerPrivate::~QtPulseAudioServerPrivate()
 {
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug();
+#endif // QTPULSEAUDIOSERVER_DEBUG
 }
 
 void QtPulseAudioServerPrivate::onServerInfo(
         pa_context *context, const pa_server_info *serverInfo, void *userData)
 {
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug();
+#endif // QTPULSEAUDIOSERVER_DEBUG
+
     Q_UNUSED(context);
 
     QtPulseAudioServerPrivate* d = reinterpret_cast< QtPulseAudioServerPrivate* >(userData);
 
     QWriteLocker locker(&d->lock);
+
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug() << "serverInfo->default_sink_name = "
+             << QString::fromUtf8(serverInfo->default_sink_name)
+             << ", d->defaultSinkName = "
+             << d->defaultSinkName;
+    qDebug() << "serverInfo->default_source_name = "
+             << QString::fromUtf8(serverInfo->default_source_name)
+             << ", d->defaultSourceName = "
+             << d->defaultSourceName;
+#endif // QTPULSEAUDIOSERVER_DEBUG
 
     if (QString::fromUtf8(serverInfo->default_sink_name) != d->defaultSinkName)
     {

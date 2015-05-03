@@ -104,6 +104,10 @@ QString QtPulseAudioServer::serverVersion()
 
 void QtPulseAudioServer::setDefaultSink(const QString& defaultSink)
 {
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug() << defaultSink;
+#endif // QTPULSEAUDIOSERVER_DEBUG
+
     Q_D(QtPulseAudioServer);
 
     QReadLocker locker(&d->lock);
@@ -121,6 +125,10 @@ void QtPulseAudioServer::setDefaultSink(const QString& defaultSink)
 
 void QtPulseAudioServer::setDefaultSource(const QString& defaultSource)
 {
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug() << defaultSource;
+#endif // QTPULSEAUDIOSERVER_DEBUG
+
     Q_D(QtPulseAudioServer);
 
     QReadLocker locker(&d->lock);
@@ -138,6 +146,10 @@ void QtPulseAudioServer::setDefaultSource(const QString& defaultSource)
 
 void QtPulseAudioServer::update()
 {
+#ifdef QTPULSEAUDIOSERVER_DEBUG
+    qDebug();
+#endif // QTPULSEAUDIOSERVER_DEBUG
+
     Q_D(QtPulseAudioServer);
 
     pa_operation_unref(
