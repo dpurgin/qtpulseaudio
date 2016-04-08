@@ -28,6 +28,8 @@ DEFINES += QTPULSEAUDIO
 
 INCLUDEPATH += include
 
+QMAKE_CXXFLAGS = -std=c++11 -Wall -Werror
+
 QT -= gui
 QT += core
 

@@ -104,6 +104,9 @@ private:
                 case QtPulseAudio::Failed:
                     emit q->failed();
                     break;
+
+                default:
+                    break;
             }
         }
     }

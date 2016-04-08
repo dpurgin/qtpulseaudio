@@ -18,7 +18,7 @@
 
 #include "application.h"
 
-#include <qtpulseaudio/qtpulseaudioconnnection.h>
+#include <qtpulseaudio/qtpulseaudioconnection.h>
 #include <qtpulseaudio/qtpulseaudiosink.h>
 
 #include <QDebug>
@@ -43,7 +43,7 @@ void Application::onConnected()
 {
     qDebug();
 
-    QtPulseAudioSink* sink = pulseAudio->sinkByIndex(0);
+    QSharedPointer< QtPulseAudioSink > sink = pulseAudio->sinkByIndex(0);
 
     if (sink)
         qDebug() << "sink:" << sink->name();

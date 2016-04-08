@@ -37,4 +37,8 @@ QtPulseAudioSourcePrivate::~QtPulseAudioSourcePrivate()
 void QtPulseAudioSourcePrivate::onSourceInfo(
         pa_context* context, const pa_source_info* sourceInfo, int eol, void* userData)
 {
+    Q_UNUSED(context);
+    Q_UNUSED(sourceInfo);
+    Q_UNUSED(eol);
+    Q_UNUSED(userData);
 }

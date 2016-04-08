@@ -109,6 +109,8 @@ bool QtPulseAudioConnection::connectToServer(const QString& server)
 QtPulseAudioStream* QtPulseAudioConnection::createStream(QtPulseAudio::StreamType streamType,
                                                       const QString& name)
 {
+    Q_UNUSED(streamType);
+
     QString streamName = name;
 
     if (streamName.isEmpty())
