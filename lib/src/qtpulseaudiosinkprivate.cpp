@@ -55,8 +55,7 @@ void QtPulseAudioSinkPrivate::onSinkInfo(
 
     if (!eol)
     {
-        QtPulseAudioSinkPrivate* const d =
-                reinterpret_cast< QtPulseAudioSinkPrivate* const >(userData);
+        auto d = reinterpret_cast< QtPulseAudioSinkPrivate* >(userData);
 
         QWriteLocker locker(&d->lock);
 
